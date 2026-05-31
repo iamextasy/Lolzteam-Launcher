@@ -65,6 +65,18 @@
     font-weight: 600;
     font-size: 14px;
     color: $color-text;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    :global(.uniqUsernameIcon--custom) {
+      display: flex;
+    }
+
+    :global(.uniqUsernameIcon--custom) svg {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   .balance {
