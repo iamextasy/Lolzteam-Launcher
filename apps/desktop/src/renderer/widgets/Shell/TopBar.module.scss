@@ -57,17 +57,19 @@
     align-items: flex-start;
     line-height: 1.2;
     min-width: 0;
+    gap: 4px;
   }
 
   .username {
     @include truncate;
     max-width: 160px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 15px;
     color: $color-text;
     display: flex;
     align-items: center;
     gap: 4px;
+    line-height: 1/2;
 
     :global(.uniqUsernameIcon--custom) {
       display: flex;

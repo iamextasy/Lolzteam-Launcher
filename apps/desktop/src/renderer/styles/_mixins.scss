@@ -68,18 +68,24 @@
 }
 
 @mixin skeleton {
-  background: linear-gradient(
-    90deg,
-    $color-surface-overlay 25%,
-    $color-primary-lighter-still 37%,
-    $color-surface-overlay 63%
-  );
-  background-size: 400% 100%;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #404040 0%, #393939 100%);
   border-radius: $radius-sm;
-  animation: skeleton-shimmer 1.4s ease infinite;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -150px;
+    width: 150px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: skeleton-loading 1.5s infinite;
+  }
 }
 
-@keyframes skeleton-shimmer {
-  from { background-position: 100% 0; }
-  to { background-position: 0 0; }
+@keyframes skeleton-loading {
+  0% { left: -150px; }
+  50%, 100% { left: 100%; }
 }

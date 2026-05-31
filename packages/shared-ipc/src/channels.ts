@@ -6,10 +6,18 @@ import type {
   AuthTokenPayload,
   LauncherSettings,
   PickFileOptions,
+  ServiceId,
   SettingsResponse,
 } from '@lolzteam/shared-types';
 
 export type LoginProgress = LoginProgressEvent & { itemId: number };
+
+export interface AccountsCategoryEvent {
+  serviceId: ServiceId;
+  items: AccountSummary[];
+  categoryDone: boolean;
+  done: boolean;
+}
 
 export const IPC_CHANNELS = {
   AUTH_OPEN_IN_APP: 'auth:open-in-app',
@@ -20,6 +28,8 @@ export const IPC_CHANNELS = {
   AUTH_STATUS_CHANGED: 'auth:status-changed',
 
   ACCOUNTS_LIST: 'accounts:list',
+  ACCOUNTS_LIST_STREAM: 'accounts:list-stream',
+  ACCOUNTS_CATEGORY: 'accounts:category',
   ACCOUNTS_REFRESH: 'accounts:refresh',
   ACCOUNTS_CLEAR_CACHE: 'accounts:clear-cache',
   ACCOUNTS_GET: 'accounts:get',
@@ -43,6 +53,7 @@ export interface IpcRequestMap {
   [IPC_CHANNELS.AUTH_LOGOUT]: void;
   [IPC_CHANNELS.AUTH_GET_STATUS]: void;
   [IPC_CHANNELS.ACCOUNTS_LIST]: void;
+  [IPC_CHANNELS.ACCOUNTS_LIST_STREAM]: void;
   [IPC_CHANNELS.ACCOUNTS_REFRESH]: void;
   [IPC_CHANNELS.ACCOUNTS_CLEAR_CACHE]: void;
   [IPC_CHANNELS.ACCOUNTS_GET]: { itemId: number };
@@ -60,6 +71,7 @@ export interface IpcResponseMap {
   [IPC_CHANNELS.AUTH_LOGOUT]: void;
   [IPC_CHANNELS.AUTH_GET_STATUS]: AuthStatus;
   [IPC_CHANNELS.ACCOUNTS_LIST]: AccountSummary[];
+  [IPC_CHANNELS.ACCOUNTS_LIST_STREAM]: void;
   [IPC_CHANNELS.ACCOUNTS_REFRESH]: AccountSummary[];
   [IPC_CHANNELS.ACCOUNTS_CLEAR_CACHE]: void;
   [IPC_CHANNELS.ACCOUNTS_GET]: AccountDetails;
@@ -75,6 +87,7 @@ export interface IpcEventMap {
   [IPC_CHANNELS.AUTH_TOKEN_RECEIVED]: AuthTokenPayload;
   [IPC_CHANNELS.AUTH_STATUS_CHANGED]: AuthStatus;
   [IPC_CHANNELS.ACCOUNT_LOGIN_PROGRESS]: LoginProgress;
+  [IPC_CHANNELS.ACCOUNTS_CATEGORY]: AccountsCategoryEvent;
   [IPC_CHANNELS.SETTINGS_CHANGED]: SettingsResponse;
 }
 

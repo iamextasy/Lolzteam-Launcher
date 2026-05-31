@@ -1,20 +1,17 @@
-import { useState } from 'react';
-import { ExternalLink, LogIn } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import logoUrl from '~/assets/logolzt.svg';
 import s from './LoginScreen.module.scss';
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
-  const [busy, setBusy] = useState<'inapp' | 'browser' | null>(null);
+  const [busy, setBusy] = useState<'browser' | null>(null);
+  const [version, setVersion] = useState('');
 
-  const handleInApp = async () => {
-    setBusy('inapp');
-    try {
-      await window.launcher.auth.openInApp();
-    } finally {
-      setBusy(null);
-    }
-  };
+  useEffect(() => {
+    window.launcher.app.getVersion().then(setVersion);
+  }, []);
 
   const handleBrowser = async () => {
     setBusy('browser');
@@ -26,28 +23,21 @@ export const LoginScreen = () => {
   };
 
   return (
-    <div className={s.wrap}>
-      <div className={s.card}>
-        <div className={s.brand}>
-          <span className={s.brandDot} aria-hidden />
-          <h1>Lolzteam Launcher</h1>
-        </div>
-        <p className={s.lede}>{t('login.lede')}</p>
-
-        <div className={s.actions}>
+    <>
+      <div className={s.loginContainer}>
+        <div className={s.loginBlock}>
+          <img className={s.logo} src={logoUrl} alt="Lolzteam" />
+          <div className={s.text}>
+            <span className={s.title}>
+              Lolzteam Launcher
+            </span>
+            <span className={s.description}>
+              Войдите через аккаунт Lolzteam, чтобы получить доступ к купленным аккаунтам и заходить в них одним кликом.
+            </span>
+          </div>
           <button
             type="button"
-            className={s.primary}
-            onClick={handleInApp}
-            disabled={busy !== null}
-          >
-            <LogIn size={18} />
-            <span>{busy === 'inapp' ? t('login.busyInApp') : t('login.openInApp')}</span>
-          </button>
-
-          <button
-            type="button"
-            className={s.secondary}
+            className={s.button}
             onClick={handleBrowser}
             disabled={busy !== null}
           >
@@ -58,8 +48,8 @@ export const LoginScreen = () => {
           </button>
         </div>
 
-        <p className={s.hint}>{t('login.hint')}</p>
+        {version && <span className={s.version}>v{version}</span>}
       </div>
-    </div>
+    </>
   );
 };

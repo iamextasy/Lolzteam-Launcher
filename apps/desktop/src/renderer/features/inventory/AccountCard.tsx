@@ -17,6 +17,7 @@ import { useLoginSession, type LoginService } from '~/stores/loginSession';
 import { Modal } from '~/widgets/Modal/Modal';
 import steamLogo from '~/assets/category/steam.svg';
 import telegramLogo from '~/assets/category/telegram.svg';
+import tiktokLogo from '~/assets/category/tiktok.svg';
 import s from './AccountCard.module.scss';
 
 interface AccountCardProps {
@@ -26,6 +27,7 @@ interface AccountCardProps {
 const CATEGORY_LOGOS: Partial<Record<ServiceId, string>> = {
   steam: steamLogo,
   telegram: telegramLogo,
+  tiktok: tiktokLogo,
 };
 
 const STEAM_ICON_BASE = 'https://nztcdn.com/steam/icon';

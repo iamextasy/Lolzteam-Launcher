@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { IPC_CHANNELS, type LoginProgress } from '@shared-ipc';
+import { IPC_CHANNELS, type AccountsCategoryEvent, type LoginProgress } from '@shared-ipc';
 import type {
   AccountDetails,
   AccountSummary,
@@ -34,6 +34,9 @@ const api = {
   },
   accounts: {
     list: () => invoke<AccountSummary[]>(IPC_CHANNELS.ACCOUNTS_LIST),
+    listStream: () => invoke<void>(IPC_CHANNELS.ACCOUNTS_LIST_STREAM),
+    onCategory: (h: (p: AccountsCategoryEvent) => void) =>
+      on<AccountsCategoryEvent>(IPC_CHANNELS.ACCOUNTS_CATEGORY, h),
     refresh: () => invoke<AccountSummary[]>(IPC_CHANNELS.ACCOUNTS_REFRESH),
     clearCache: () => invoke<void>(IPC_CHANNELS.ACCOUNTS_CLEAR_CACHE),
     get: (itemId: number) =>

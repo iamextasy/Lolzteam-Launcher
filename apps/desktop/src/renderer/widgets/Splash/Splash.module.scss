@@ -6,7 +6,6 @@
   align-items: center;
   justify-content: center;
   background: $color-bg;
-  animation: fade-in $duration-base $ease-out;
 }
 
 .hidden {
@@ -19,13 +18,4 @@
   width: 196px;
   height: 196px;
   object-fit: contain;
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }

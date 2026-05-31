@@ -1,10 +1,5 @@
 import type { ServiceId } from './service-id';
 
-/**
- * Map lzt.market `category.name` (slug from API) onto our internal ServiceId.
- * Categories not listed here are returned as null — the renderer will show
- * them in an "Other" bucket and gray out the login button.
- */
 const NAME_TO_SERVICE: Record<string, ServiceId> = {
   steam: 'steam',
   telegram: 'telegram',
@@ -41,4 +36,10 @@ const NAME_TO_SERVICE: Record<string, ServiceId> = {
 export const categoryNameToServiceId = (name: string | undefined | null): ServiceId | null => {
   if (!name) return null;
   return NAME_TO_SERVICE[name.toLowerCase()] ?? null;
+};
+
+export const SERVICE_CATEGORY_ID: Partial<Record<ServiceId, number>> = {
+  steam: 1,
+  telegram: 24,
+  tiktok: 20,
 };

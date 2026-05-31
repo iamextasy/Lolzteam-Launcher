@@ -335,30 +335,53 @@ const normalizeItem = (item: RawItem): AccountSummary => {
   };
 };
 
+type OnPage = (items: AccountSummary[], page: number) => void;
+
+const paginateOrders = async (
+  categoryId?: number,
+  onPage?: OnPage,
+): Promise<AccountSummary[]> => {
+  const out: AccountSummary[] = [];
+  let page = 1;
+  let hasNext = true;
+  while (hasNext && page <= 50) {
+    const resp = await getClient().listOrders({ page, categoryId });
+    const items = resp.items ?? [];
+    const normalized = items.map(normalizeItem);
+    out.push(...normalized);
+    onPage?.(normalized, page);
+    if (typeof resp.hasNextPage === 'boolean') {
+      hasNext = resp.hasNextPage;
+    } else {
+      const perPage = resp.perPage || items.length;
+      hasNext = items.length > 0 && perPage > 0 && page * perPage < resp.totalItems;
+    }
+    page += 1;
+  }
+  return out;
+};
+
 export const listPurchasedAccounts = async (): Promise<AccountSummary[]> => {
   const token = await loadToken();
   if (!token) return [];
   try {
-    const out: AccountSummary[] = [];
-    let page = 1;
-    let hasNext = true;
-    while (hasNext && page <= 50) {
-      const resp = await getClient().listOrders({ page });
-      const items = resp.items ?? [];
-      for (const raw of items) out.push(normalizeItem(raw));
-      // Trust the API's hasNextPage flag. Fall back to a totalItems/perPage
-      // calculation only if the flag is missing (older API builds).
-      if (typeof resp.hasNextPage === 'boolean') {
-        hasNext = resp.hasNextPage;
-      } else {
-        const perPage = resp.perPage || items.length;
-        hasNext = items.length > 0 && perPage > 0 && page * perPage < resp.totalItems;
-      }
-      page += 1;
-    }
-    return out;
+    return await paginateOrders();
   } catch (err) {
     log.warn('[market] listPurchasedAccounts failed', err);
+    return [];
+  }
+};
+
+export const listAccountsByCategory = async (
+  categoryId: number,
+  onPage?: OnPage,
+): Promise<AccountSummary[]> => {
+  const token = await loadToken();
+  if (!token) return [];
+  try {
+    return await paginateOrders(categoryId, onPage);
+  } catch (err) {
+    log.warn(`[market] listAccountsByCategory(${categoryId}) failed`, err);
     return [];
   }
 };
@@ -426,10 +449,6 @@ export const fetchTelegramLoginCode = async (
   return null;
 };
 
-// Fetches the Steam Guard mafile for an item and returns its `shared_secret`
-// (for TOTP generation). NOTE: this endpoint cancels the account's active
-// purchase guarantee, so callers must only invoke it when a TOTP guard is
-// actually required and no secret is already available locally.
 export const fetchSteamMafile = async (itemId: number): Promise<string | null> => {
   const token = await loadToken();
   if (!token) return null;
@@ -445,10 +464,6 @@ export const fetchSteamMafile = async (itemId: number): Promise<string | null> =
 const asTrimmedString = (v: unknown): string | null =>
   typeof v === 'string' && v.trim() ? v.trim() : null;
 
-// `loginData.login` is the human-readable account login for Steam, but for Telegram items
-// it holds a long hex auth blob. We feed `loginRaw`/`passwordRaw` only from sources that
-// are known to be human-readable; service-specific adapters reach into `secrets` for the
-// rest. Adapter-specific extraction stays the source of truth — this is just a sane default.
 const pickLoginRaw = (
   item: Record<string, unknown>,
   serviceId: ServiceId | null,
@@ -459,7 +474,6 @@ const pickLoginRaw = (
   const fromAccountLogin = asTrimmedString(item.account_login);
 
   if (serviceId === 'telegram') {
-    // For TG, loginData.login is a hex auth blob — never expose it as loginRaw.
     return asTrimmedString(item.telegram_phone) ?? null;
   }
   return fromLoginData ?? fromAccountLogin;
@@ -475,7 +489,6 @@ const pickPasswordRaw = (
   const fromAccountPassword = asTrimmedString(item.account_password);
 
   if (serviceId === 'telegram') {
-    // `telegram_password` is a 0/1 flag; the real 2FA value lives in `telegram_password_value`.
     return asTrimmedString(item.telegram_password_value) ?? null;
   }
   return fromLoginData ?? fromAccountPassword;
