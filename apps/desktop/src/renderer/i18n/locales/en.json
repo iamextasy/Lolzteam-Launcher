@@ -33,6 +33,12 @@
     "title": "Authorization",
     "lede": "Sign in with your LZT account to access purchased accounts and log into Steam, Telegram, and other services in one click.",
     "language": "Change language",
+    "network": {
+      "checking": "Checking connection to API…",
+      "online": "Connected to API · {{ms}} ms",
+      "offline": "No connection to API",
+      "retry": "Retry"
+    },
     "openInApp": "Sign in here",
     "busyInApp": "Opening…",
     "openBrowser": "Use browser",

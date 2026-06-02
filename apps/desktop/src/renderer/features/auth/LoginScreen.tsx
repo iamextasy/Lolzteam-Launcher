@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { ExternalLink, Languages, Check } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ExternalLink, Languages, Check, Wifi, WifiOff, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LocalePreference } from '@shared-types';
 import logoUrl from '~/assets/logolzt.svg';
@@ -8,20 +8,33 @@ import s from './LoginScreen.module.scss';
 
 const LOCALE_OPTIONS: readonly LocalePreference[] = ['ru', 'en'] as const;
 
+type NetState =
+  | { kind: 'checking' }
+  | { kind: 'online'; ms: number }
+  | { kind: 'offline' };
+
 export const LoginScreen = () => {
   const { t } = useTranslation();
   const [busy, setBusy] = useState<'browser' | null>(null);
   const [version, setVersion] = useState('');
   const [locale, setLocale] = useState<LocalePreference>('ru');
   const [langOpen, setLangOpen] = useState(false);
+  const [net, setNet] = useState<NetState>({ kind: 'checking' });
   const langRef = useRef<HTMLDivElement>(null);
+
+  const checkNetwork = useCallback(async () => {
+    setNet({ kind: 'checking' });
+    const res = await window.launcher.app.pingApi();
+    setNet(res.online ? { kind: 'online', ms: res.ms } : { kind: 'offline' });
+  }, []);
 
   useEffect(() => {
     window.launcher.app.getVersion().then(setVersion);
     window.launcher.settings.get().then((next) => setLocale(next.settings.locale));
     const off = window.launcher.settings.onChanged((next) => setLocale(next.settings.locale));
+    void checkNetwork();
     return off;
-  }, []);
+  }, [checkNetwork]);
 
   useEffect(() => {
     if (!langOpen) return;
@@ -57,6 +70,40 @@ export const LoginScreen = () => {
           aria-hidden="true"
           style={{ '--login-bg': `url(${backgroundUrl})` } as React.CSSProperties}
         />
+
+        <div
+          className={`${s.netStatus} ${
+            net.kind === 'online'
+              ? s.netOnline
+              : net.kind === 'offline'
+                ? s.netOffline
+                : s.netChecking
+          }`}
+          role="status"
+        >
+          {net.kind === 'checking' && (
+            <>
+              <Loader2 size={14} className={s.netSpin} />
+              <span>{t('login.network.checking')}</span>
+            </>
+          )}
+          {net.kind === 'online' && (
+            <>
+              <Wifi size={14} />
+              <span>{t('login.network.online', { ms: net.ms })}</span>
+            </>
+          )}
+          {net.kind === 'offline' && (
+            <>
+              <WifiOff size={14} />
+              <span>{t('login.network.offline')}</span>
+              <button type="button" className={s.netRetry} onClick={checkNetwork}>
+                {t('login.network.retry')}
+              </button>
+            </>
+          )}
+        </div>
+
         <div className={s.loginBlock}>
           <img className={s.logo} src={logoUrl} alt="Lolzteam" />
           <div className={s.text}>
@@ -68,7 +115,7 @@ export const LoginScreen = () => {
               type="button"
               className={s.button}
               onClick={handleBrowser}
-              disabled={busy !== null}
+              disabled={busy !== null || net.kind !== 'online'}
             >
               <ExternalLink size={16} />
               <span>

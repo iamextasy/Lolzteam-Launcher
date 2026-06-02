@@ -44,6 +44,10 @@ export interface BrowserNavState {
   title: string;
 }
 
+export type NetworkStatus =
+  | { online: true; ms: number }
+  | { online: false; message: string };
+
 export type UpdateStatus =
   | { state: 'checking' }
   | { state: 'available'; version: string; notes: string | null }
@@ -93,6 +97,7 @@ export const IPC_CHANNELS = {
   BROWSER_NAV_STATE: 'browser-nav:state',
 
   APP_OPEN_EXTERNAL: 'app:open-external',
+  APP_PING_API: 'app:ping-api',
   APP_GET_VERSION: 'app:get-version',
   APP_OPEN_LOGS: 'app:open-logs',
   APP_EXPORT_LOG: 'app:export-log',
@@ -142,6 +147,7 @@ export interface IpcRequestMap {
   [IPC_CHANNELS.BROWSER_NAV_COLLAPSE]: void;
   [IPC_CHANNELS.BROWSER_NAV_PROXY_RETEST]: void;
   [IPC_CHANNELS.APP_OPEN_EXTERNAL]: { url: string };
+  [IPC_CHANNELS.APP_PING_API]: void;
   [IPC_CHANNELS.APP_GET_VERSION]: void;
   [IPC_CHANNELS.APP_OPEN_LOGS]: void;
   [IPC_CHANNELS.APP_EXPORT_LOG]: void;
@@ -179,6 +185,7 @@ export interface IpcResponseMap {
   [IPC_CHANNELS.BROWSER_NAV_COLLAPSE]: void;
   [IPC_CHANNELS.BROWSER_NAV_PROXY_RETEST]: ProxyTestResult;
   [IPC_CHANNELS.APP_OPEN_EXTERNAL]: void;
+  [IPC_CHANNELS.APP_PING_API]: NetworkStatus;
   [IPC_CHANNELS.APP_GET_VERSION]: string;
   [IPC_CHANNELS.APP_OPEN_LOGS]: void;
   [IPC_CHANNELS.APP_EXPORT_LOG]: { ok: boolean; path?: string };

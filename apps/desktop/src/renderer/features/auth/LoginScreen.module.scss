@@ -17,6 +17,74 @@
     z-index: 0;
   }
 
+  .netStatus {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    padding: 4px 10px;
+    border-radius: 96px;
+    font-size: $fs-sm;
+    font-weight: 500;
+    border: 1px solid transparent;
+    backdrop-filter: blur(8px);
+    white-space: nowrap;
+  }
+
+  .netChecking {
+    color: $color-text-muted;
+    background: rgba(255, 255, 255, 0.04);
+    border-color: $color-border-strong;
+  }
+
+  .netOnline {
+    color: #1EA360;
+    background: rgba(30, 163, 96, 0.12);
+    border-color: rgba(30, 163, 96, 0.32);
+  }
+
+  .netOffline {
+    color: #E5484D;
+    background: rgba(229, 72, 77, 0.12);
+    border-color: rgba(229, 72, 77, 0.32);
+  }
+
+  .netSpin {
+    animation: netSpin 0.8s linear infinite;
+  }
+
+  @keyframes netSpin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .netRetry {
+    @include button-reset;
+    @include clickable;
+    margin-left: $space-1;
+    margin-right: -6px;
+    padding: 0 8px;
+    border-radius: 96px;
+    font-size: $fs-sm;
+    font-weight: 600;
+    color: #fff;
+    background: rgba(229, 72, 77, 0.9);
+    transition: filter $duration-fast $ease-out;
+
+    &:hover {
+      filter: brightness(1.15);
+    }
+
+    &:focus-visible {
+      @include focus-ring;
+    }
+  }
+
   .loginBlock {
     position: relative;
     z-index: 1;

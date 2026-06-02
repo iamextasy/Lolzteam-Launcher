@@ -9,6 +9,18 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.4.3',
+    date: '2026-06-02',
+    changes: {
+      ru: [
+        'На странице входа добавлена информация о статусе подключения к API',
+      ],
+      en: [
+        'Added an API connection status indicator on the login screen',
+      ],
+    },
+  },
+  {
     version: '0.4.2',
     date: '2026-06-02',
     changes: {

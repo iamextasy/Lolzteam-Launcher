@@ -1,9 +1,32 @@
 import { copyFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
-import { IPC_CHANNELS } from '@shared-ipc';
+import { IPC_CHANNELS, LOLZ_CONFIG, type NetworkStatus } from '@shared-ipc';
 
 const ALLOWED_URL_PREFIXES = ['https://', 'http://'];
+
+const PING_TIMEOUT_MS = 8000;
+
+// Any HTTP response (even 401) proves the API is reachable; only a transport
+// error (DNS/connect/timeout) means the user is offline or lzt is blocked.
+const pingApi = async (): Promise<NetworkStatus> => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), PING_TIMEOUT_MS);
+  const started = Date.now();
+  try {
+    await fetch(`${LOLZ_CONFIG.marketApiUrl}/me`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      signal: controller.signal,
+    });
+    return { online: true, ms: Date.now() - started };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'fetch failed';
+    return { online: false, message };
+  } finally {
+    clearTimeout(timer);
+  }
+};
 
 const logsDir = () => app.getPath('logs');
 const logFile = () => join(logsDir(), 'main.log');
@@ -19,6 +42,8 @@ export const registerAppIpc = () => {
     }
     await shell.openExternal(url);
   });
+
+  ipcMain.handle(IPC_CHANNELS.APP_PING_API, () => pingApi());
 
   ipcMain.handle(IPC_CHANNELS.APP_OPEN_LOGS, async () => {
     await shell.openPath(logsDir());

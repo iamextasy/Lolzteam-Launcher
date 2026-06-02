@@ -4,6 +4,7 @@ import {
   type AccountsCategoryEvent,
   type CheckAccountResult,
   type LoginProgress,
+  type NetworkStatus,
   type ProxyTestResult,
   type UpdateStatus,
 } from '@shared-ipc';
@@ -89,6 +90,7 @@ const api = {
   },
   app: {
     getVersion: () => invoke<string>(IPC_CHANNELS.APP_GET_VERSION),
+    pingApi: () => invoke<NetworkStatus>(IPC_CHANNELS.APP_PING_API),
     openExternal: (url: string) =>
       invoke<void>(IPC_CHANNELS.APP_OPEN_EXTERNAL, { url }),
     openLogs: () => invoke<void>(IPC_CHANNELS.APP_OPEN_LOGS),
