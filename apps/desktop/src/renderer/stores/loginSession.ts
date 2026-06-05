@@ -1,5 +1,5 @@
-import { create } from 'zustand';
 import type { LoginStep } from '@adapter-contract';
+import { create } from 'zustand';
 
 export type LoginService = 'steam' | 'telegram' | 'browser' | 'discord';
 

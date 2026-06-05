@@ -39,5 +39,7 @@ export const bootstrap = async (): Promise<void> => {
     });
   });
 
-  log.info(`[boot] electron ${process.versions.electron} node ${process.versions.node} (csp=${isDev ? 'dev' : 'prod'})`);
+  log.info(
+    `[boot] electron ${process.versions.electron} node ${process.versions.node} (csp=${isDev ? 'dev' : 'prod'})`,
+  );
 };

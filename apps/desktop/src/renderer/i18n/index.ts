@@ -1,8 +1,8 @@
+import type { Locale } from '@shared-types';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import type { Locale } from '@shared-types';
-import ru from './locales/ru.json';
 import en from './locales/en.json';
+import ru from './locales/ru.json';
 
 export const initI18n = async (initialLocale: Locale): Promise<void> => {
   if (i18n.isInitialized) {

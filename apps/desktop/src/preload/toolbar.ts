@@ -12,9 +12,7 @@ const BROWSER_NAV_COLLAPSE = 'browser-nav:collapse';
 const BROWSER_NAV_PROXY_RETEST = 'browser-nav:proxy-retest';
 const BROWSER_NAV_STATE = 'browser-nav:state';
 
-type RetestResult =
-  | { ok: true; ms: number; ip: string }
-  | { ok: false; message: string };
+type RetestResult = { ok: true; ms: number; ip: string } | { ok: false; message: string };
 
 interface NavState {
   url: string;

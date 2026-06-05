@@ -1,10 +1,16 @@
-import { useEffect } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { create } from 'zustand';
 import type { AccountSummary, ServiceId } from '@shared-types';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { create } from 'zustand';
 import { useAccountsLoading } from './accountsLoading';
 
-export const STREAM_SERVICES = ['steam', 'telegram', 'tiktok', 'instagram', 'discord'] as const satisfies readonly ServiceId[];
+export const STREAM_SERVICES = [
+  'steam',
+  'telegram',
+  'tiktok',
+  'instagram',
+  'discord',
+] as const satisfies readonly ServiceId[];
 export type StreamService = (typeof STREAM_SERVICES)[number];
 
 export const isStreamService = (id: ServiceId | null): id is StreamService =>
@@ -38,15 +44,12 @@ export const useAccountsStream = create<AccountsStreamState>((set) => ({
   setLoaded: (updater) => set((s) => ({ loaded: updater(s.loaded) })),
   setProgress: (progress) => set({ progress }),
   resetAccumulator: () => set({ streamed: new Map() }),
-  reset: () =>
-    set({ streaming: false, loaded: new Set(), streamed: new Map(), progress: null }),
+  reset: () => set({ streaming: false, loaded: new Set(), streamed: new Map(), progress: null }),
 }));
 
 export const mergeWithStream = (base: AccountSummary[]): AccountSummary[] => {
   const touched = useAccountsStream.getState().streamed;
-  const kept = base.filter(
-    (it) => !(isStreamService(it.category) && touched.has(it.category)),
-  );
+  const kept = base.filter((it) => !(isStreamService(it.category) && touched.has(it.category)));
   return [...kept, ...[...touched.values()].flat()];
 };
 
@@ -74,9 +77,7 @@ export const useAccountsStreamController = () => {
 
   useEffect(() => {
     const rebuild = () =>
-      qc.setQueryData<AccountSummary[]>(['accounts'], (prev) =>
-        mergeWithStream(prev ?? []),
-      );
+      qc.setQueryData<AccountSummary[]>(['accounts'], (prev) => mergeWithStream(prev ?? []));
 
     const off = window.launcher.accounts.onCategory(
       ({ serviceId, items, categoryDone, done, page, totalPages }) => {

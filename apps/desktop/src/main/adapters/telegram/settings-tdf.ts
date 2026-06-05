@@ -43,8 +43,7 @@ class QtWriter {
   }
 }
 
-const deriveLegacyKey = (salt: Buffer): Buffer =>
-  pbkdf2Sync(Buffer.alloc(0), salt, 4, 256, 'sha1');
+const deriveLegacyKey = (salt: Buffer): Buffer => pbkdf2Sync(Buffer.alloc(0), salt, 4, 256, 'sha1');
 
 const prepareAesOldMtp = (authKey: Buffer, msgKey: Buffer): { key: Buffer; iv: Buffer } => {
   const x = 8;
@@ -149,10 +148,7 @@ const buildTdfContainer = (blocks: Buffer): Buffer => {
 export const buildProxySettingsContainer = (proxy: ProxyEntry): Buffer =>
   buildTdfContainer(encodeProxyBlock(proxy));
 
-export const writeProxySettings = async (
-  tdataDir: string,
-  proxy: ProxyEntry,
-): Promise<void> => {
+export const writeProxySettings = async (tdataDir: string, proxy: ProxyEntry): Promise<void> => {
   const container = buildProxySettingsContainer(proxy);
   await writeFile(join(tdataDir, 'settingss'), container);
 };

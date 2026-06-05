@@ -1,8 +1,8 @@
 import './styles/global.scss';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { I18nextProvider } from 'react-i18next';
 import { App } from './app/App';
 import { ErrorBoundary } from './app/ErrorBoundary';

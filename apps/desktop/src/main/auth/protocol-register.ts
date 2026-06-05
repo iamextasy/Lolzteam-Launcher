@@ -1,9 +1,9 @@
-import log from 'electron-log/main';
-import { app } from 'electron';
 import { execFile } from 'node:child_process';
 import { promises as fs, existsSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
+import { app } from 'electron';
+import log from 'electron-log/main';
 
 const linuxDesktopFileName = (scheme: string) => `lolzteam-${scheme}-handler.desktop`;
 

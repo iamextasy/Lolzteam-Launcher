@@ -9,19 +9,14 @@ import type {
 } from '@adapter-contract';
 import type { AccountDetails } from '@shared-types';
 import { failLogin as fail } from '../_shared/fail';
+import { computeConnectCacheHdr, dpapiProtect } from './dpapi';
+import { extractSteamCreds } from './extract';
 import { findSteamPaths } from './paths';
 import { killSteamProcesses, waitForSteamExit } from './process';
-import { extractSteamCreds } from './extract';
+import { setAutoLoginUser } from './registry';
 import { acquireRefreshToken } from './session';
 import { steam64ToSteam32 } from './steamid';
-import {
-  mergeConfigVdf,
-  mergeLocalVdf,
-  mergeLoginUsersVdf,
-  writeLocalConfigVdf,
-} from './vdf';
-import { computeConnectCacheHdr, dpapiProtect } from './dpapi';
-import { setAutoLoginUser } from './registry';
+import { mergeConfigVdf, mergeLocalVdf, mergeLoginUsersVdf, writeLocalConfigVdf } from './vdf';
 
 export const steamAdapter: ServiceAdapter = {
   id: 'steam',
@@ -88,7 +83,8 @@ export const steamAdapter: ServiceAdapter = {
           // The account uses a Steam Guard authenticator but the mafile wasn't in
           // the item data. Fetch it on demand (this cancels the item's guarantee,
           // so we only do it now that we know TOTP is required) and retry.
-          if (!ctx.fetchSteamMafile) return fail('Аккаунт требует код Steam Guard (mafile недоступен)');
+          if (!ctx.fetchSteamMafile)
+            return fail('Аккаунт требует код Steam Guard (mafile недоступен)');
           ctx.log.info('[steam] fetching mafile for TOTP guard');
           const sharedSecret = await ctx.fetchSteamMafile(account.itemId);
           if (!sharedSecret) {
@@ -122,7 +118,7 @@ export const steamAdapter: ServiceAdapter = {
     const steamId32 = steam64ToSteam32(steamId);
 
     ctx.onProgress?.({ step: 'killing-steam' });
-    ctx.log.info(`[steam] killing Steam processes`);
+    ctx.log.info('[steam] killing Steam processes');
     await killSteamProcesses();
     await waitForSteamExit(5000);
 
@@ -165,7 +161,7 @@ export const steamAdapter: ServiceAdapter = {
     }
 
     ctx.onProgress?.({ step: 'launching-steam' });
-    ctx.log.info(`[steam] launching via steam://0`);
+    ctx.log.info('[steam] launching via steam://0');
     const child = spawn('cmd', ['/c', 'start', '', 'steam://0'], {
       detached: true,
       stdio: 'ignore',

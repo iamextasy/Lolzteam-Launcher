@@ -7,13 +7,13 @@ const tokenize = (src: string): string[] => {
   const tokens: string[] = [];
   let i = 0;
   while (i < src.length) {
-    const c = src[i]!;
+    const c = src[i];
     if (c === '"') {
       let end = i + 1;
       let value = '';
       while (end < src.length && src[end] !== '"') {
         if (src[end] === '\\' && end + 1 < src.length) {
-          const next = src[end + 1]!;
+          const next = src[end + 1];
           value += next === 'n' ? '\n' : next === 't' ? '\t' : next;
           end += 2;
         } else {
@@ -39,7 +39,7 @@ const parseBlock = (tokens: string[], start: number): { value: VdfObject; next: 
   const obj: VdfObject = {};
   let i = start;
   while (i < tokens.length) {
-    const tok = tokens[i]!;
+    const tok = tokens[i];
     if (tok === '}') return { value: obj, next: i + 1 };
     const key = tok;
     i += 1;
@@ -49,7 +49,7 @@ const parseBlock = (tokens: string[], start: number): { value: VdfObject; next: 
       obj[key] = sub.value;
       i = sub.next;
     } else {
-      obj[key] = tokens[i]!;
+      obj[key] = tokens[i];
       i += 1;
     }
   }
@@ -59,7 +59,7 @@ const parseBlock = (tokens: string[], start: number): { value: VdfObject; next: 
 export const parseVdf = (src: string): VdfObject => {
   const tokens = tokenize(src);
   if (tokens.length === 0) return {};
-  const rootKey = tokens[0]!;
+  const rootKey = tokens[0];
   if (tokens[1] !== '{') return {};
   const parsed = parseBlock(tokens, 2);
   return { [rootKey]: parsed.value };
@@ -86,7 +86,7 @@ const stringify = (obj: VdfObject, indent: number): string => {
 export const writeVdfString = (root: VdfObject): string => {
   const entries = Object.entries(root);
   if (entries.length === 0) return '';
-  const [key, value] = entries[0]!;
+  const [key, value] = entries[0];
   if (typeof value === 'string') return `"${escapeValue(key)}"\t\t"${escapeValue(value)}"\n`;
   return `"${escapeValue(key)}"\n{\n${stringify(value, 1)}\n}\n`;
 };

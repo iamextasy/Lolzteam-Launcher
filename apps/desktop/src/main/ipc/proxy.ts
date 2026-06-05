@@ -1,5 +1,5 @@
-import { ipcMain } from 'electron';
 import { IPC_CHANNELS, type IpcRequestMap } from '@shared-ipc';
+import { ipcMain } from 'electron';
 import { testProxy } from '../services/proxy';
 
 export const registerProxyIpc = (): void => {

@@ -1,12 +1,11 @@
 import { createDecipheriv, createHash, pbkdf2Sync } from 'node:crypto';
-import { describe, expect, it } from 'vitest';
 import type { ProxyEntry } from '@shared-types';
+import { describe, expect, it } from 'vitest';
 import { buildProxySettingsContainer } from '../settings-tdf';
 
 const TDF_MAGIC = Buffer.from('TDF$', 'ascii');
 
-const deriveLegacyKey = (salt: Buffer): Buffer =>
-  pbkdf2Sync(Buffer.alloc(0), salt, 4, 256, 'sha1');
+const deriveLegacyKey = (salt: Buffer): Buffer => pbkdf2Sync(Buffer.alloc(0), salt, 4, 256, 'sha1');
 
 const prepareAesOldMtp = (authKey: Buffer, msgKey: Buffer) => {
   const x = 8;

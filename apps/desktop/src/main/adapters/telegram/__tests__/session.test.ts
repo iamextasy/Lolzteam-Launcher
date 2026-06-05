@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { buildOfflineSession } from '../session';
 
 const HEX_256 = 'a'.repeat(512);
@@ -22,14 +22,14 @@ describe('buildOfflineSession', () => {
   });
 
   it('throws on unknown dc id', () => {
-    expect(() =>
-      buildOfflineSession({ authKeyHex: HEX_256, dcId: 99, userId: 1 }),
-    ).toThrow(/Неизвестный DC/);
+    expect(() => buildOfflineSession({ authKeyHex: HEX_256, dcId: 99, userId: 1 })).toThrow(
+      /Неизвестный DC/,
+    );
   });
 
   it('throws on wrong auth_key length', () => {
-    expect(() =>
-      buildOfflineSession({ authKeyHex: 'abcd', dcId: 2, userId: 1 }),
-    ).toThrow(/256 байт/);
+    expect(() => buildOfflineSession({ authKeyHex: 'abcd', dcId: 2, userId: 1 })).toThrow(
+      /256 байт/,
+    );
   });
 });

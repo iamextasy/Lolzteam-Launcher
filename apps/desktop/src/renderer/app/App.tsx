@@ -1,17 +1,17 @@
+import type { AuthStatus } from '@shared-types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
-import type { AuthStatus } from '@shared-types';
-import { LoginScreen } from '~/features/auth/LoginScreen';
 import { ConnectionScreen } from '~/features/auth/ConnectionScreen';
-import { Shell } from '~/widgets/Shell/Shell';
+import { LoginScreen } from '~/features/auth/LoginScreen';
 import { InventoryView } from '~/features/inventory/InventoryView';
-import { SettingsView } from '~/features/settings/SettingsView';
 import { LoginProgressModal } from '~/features/inventory/LoginProgressModal';
-import { useLoginSession } from '~/stores/loginSession';
-import { useAccountsStream, useAccountsStreamController } from '~/stores/accountsStream';
-import { useView } from '~/stores/view';
-import { initSettingsStore } from '~/stores/settings';
+import { SettingsView } from '~/features/settings/SettingsView';
 import { useLocaleSync } from '~/i18n/useLocaleSync';
+import { useAccountsStream, useAccountsStreamController } from '~/stores/accountsStream';
+import { useLoginSession } from '~/stores/loginSession';
+import { initSettingsStore } from '~/stores/settings';
+import { useView } from '~/stores/view';
+import { Shell } from '~/widgets/Shell/Shell';
 import { Splash } from '~/widgets/Splash/Splash';
 
 initSettingsStore();
@@ -65,7 +65,7 @@ export const App = () => {
     setLive(null);
     const res = await status.refetch();
     return res.data;
-  }, []);
+  }, [status.refetch]);
 
   const loading = status.isLoading && !current;
 

@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
-import { ChevronDown, LogOut, Settings, User } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import type { AuthSession } from '@shared-types';
+import { ChevronDown, LogOut, Settings, User } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import logoUrl from '~/assets/logolzt.svg';
 import { useAccountsLoading } from '~/stores/accountsLoading';
-import { useAccountsStream, type StreamService } from '~/stores/accountsStream';
+import { type StreamService, useAccountsStream } from '~/stores/accountsStream';
 import { useLoginSession } from '~/stores/loginSession';
 import { useView } from '~/stores/view';
 import { ChangelogModal } from '~/widgets/Changelog/ChangelogModal';
@@ -46,9 +46,7 @@ export const TopBar = ({ session }: TopBarProps) => {
 
   const accountsLoading = useAccountsLoading((st) => st.loading);
   const progress = useAccountsStream((st) => st.progress);
-  const loggingIn = useLoginSession(
-    (st) => st.isOpen && st.step !== 'done' && st.error === null,
-  );
+  const loggingIn = useLoginSession((st) => st.isOpen && st.step !== 'done' && st.error === null);
 
   let loadingText: string | null = null;
   if (loggingIn) {
@@ -88,9 +86,7 @@ export const TopBar = ({ session }: TopBarProps) => {
     };
   }, [menuOpen]);
 
-  const balance = session
-    ? formatBalance(session.balance, session.currency, i18n.language)
-    : null;
+  const balance = session ? formatBalance(session.balance, session.currency, i18n.language) : null;
 
   return (
     <header className={s.topbar}>
@@ -98,11 +94,7 @@ export const TopBar = ({ session }: TopBarProps) => {
         <img className={s.brandLogo} src={logoUrl} aria-hidden alt="Lolzteam" />
         {version && (
           <Tooltip label={t('changelog.title')} placement="bottom">
-            <button
-              type="button"
-              className={s.versionPill}
-              onClick={() => setChangelogOpen(true)}
-            >
+            <button type="button" className={s.versionPill} onClick={() => setChangelogOpen(true)}>
               v{version}
             </button>
           </Tooltip>
@@ -111,8 +103,23 @@ export const TopBar = ({ session }: TopBarProps) => {
 
       {loadingText && (
         <div className={s.loadingBar}>
-          <svg className={s.spin} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2V6M12 18V22M6 12H2M22 12H18M19.0784 19.0784L16.25 16.25M19.0784 4.99994L16.25 7.82837M4.92157 19.0784L7.75 16.25M4.92157 4.99994L7.75 7.82837" stroke="white" strokeOpacity="0.72" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg
+            className={s.spin}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M12 2V6M12 18V22M6 12H2M22 12H18M19.0784 19.0784L16.25 16.25M19.0784 4.99994L16.25 7.82837M4.92157 19.0784L7.75 16.25M4.92157 4.99994L7.75 7.82837"
+              stroke="white"
+              strokeOpacity="0.72"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
           {loadingText}
         </div>
@@ -135,20 +142,10 @@ export const TopBar = ({ session }: TopBarProps) => {
               </div>
             )}
             <div className={s.profileText}>
-              {session.usernameHtml ? (
-                <span
-                  className={s.username}
-                  dangerouslySetInnerHTML={{ __html: session.usernameHtml }}
-                />
-              ) : (
-                <span className={s.username}>{session.username}</span>
-              )}
+              <span className={s.username}>{session.username}</span>
               {balance && <span className={s.balance}>{balance}</span>}
             </div>
-            <ChevronDown
-              size={16}
-              className={`${s.chevron} ${menuOpen ? s.chevronOpen : ''}`}
-            />
+            <ChevronDown size={16} className={`${s.chevron} ${menuOpen ? s.chevronOpen : ''}`} />
           </button>
 
           {menuOpen && (

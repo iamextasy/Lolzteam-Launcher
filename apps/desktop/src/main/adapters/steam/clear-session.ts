@@ -3,17 +3,14 @@ import { join } from 'node:path';
 import { findSteamPaths } from './paths';
 import { killSteamProcesses, waitForSteamExit } from './process';
 import { clearAutoLoginUser } from './registry';
-import { getObj, parseVdf, writeVdfString, type VdfObject } from './vdf-parse';
+import { type VdfObject, getObj, parseVdf, writeVdfString } from './vdf-parse';
 
 export interface ClearSteamSessionResult {
   ok: boolean;
   message?: string;
 }
 
-const rewriteVdf = async (
-  path: string,
-  mutate: (root: VdfObject) => boolean,
-): Promise<void> => {
+const rewriteVdf = async (path: string, mutate: (root: VdfObject) => boolean): Promise<void> => {
   let text: string;
   try {
     text = await fs.readFile(path, 'utf8');

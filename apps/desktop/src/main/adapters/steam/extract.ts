@@ -40,10 +40,7 @@ const LEGACY_PASSWORD_KEYS = [
 
 const MAFILE_KEYS = ['steam_mafile', 'mafile', 'mafile_data'] as const;
 
-const pickFromKeys = (
-  source: Record<string, unknown>,
-  keys: readonly string[],
-): string | null => {
+const pickFromKeys = (source: Record<string, unknown>, keys: readonly string[]): string | null => {
   for (const k of keys) {
     const found = asString(source[k]);
     if (found) return found;
@@ -56,9 +53,7 @@ export const extractSteamCreds = (details: AccountDetails): SteamCreds | null =>
 
   const loginData = pickLoginData(secrets);
   const login =
-    asString(loginData?.login) ??
-    pickFromKeys(secrets, LEGACY_LOGIN_KEYS) ??
-    details.loginRaw;
+    asString(loginData?.login) ?? pickFromKeys(secrets, LEGACY_LOGIN_KEYS) ?? details.loginRaw;
   const password =
     asString(loginData?.password) ??
     pickFromKeys(secrets, LEGACY_PASSWORD_KEYS) ??

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { Modal } from '~/widgets/Modal/Modal';
 import { CHANGELOG } from '~/data/changelog';
+import { Modal } from '~/widgets/Modal/Modal';
 import s from './ChangelogModal.module.scss';
 
 interface ChangelogModalProps {
@@ -32,8 +32,8 @@ export const ChangelogModal = ({ currentVersion, onClose }: ChangelogModalProps)
                 <span className={s.date}>{formatDate(entry.date, i18n.language)}</span>
               </header>
               <ul className={s.changes}>
-                {entry.changes[lang].map((line, i) => (
-                  <li key={i}>{line}</li>
+                {entry.changes[lang].map((line) => (
+                  <li key={line}>{line}</li>
                 ))}
               </ul>
             </section>

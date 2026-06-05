@@ -1,12 +1,5 @@
+import { ArrowLeft, ArrowRight, Copy, ExternalLink, RotateCw, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import {
-  ArrowLeft,
-  ArrowRight,
-  Copy,
-  ExternalLink,
-  RotateCw,
-  X,
-} from 'lucide-react';
 import logoUrl from '~/assets/logolzt.svg';
 import s from './BrowserToolbar.module.scss';
 
@@ -18,9 +11,7 @@ interface NavState {
   title: string;
 }
 
-type RetestResult =
-  | { ok: true; ms: number; ip: string }
-  | { ok: false; message: string };
+type RetestResult = { ok: true; ms: number; ip: string } | { ok: false; message: string };
 
 interface BrowserNavBridge {
   back: () => Promise<unknown>;
@@ -134,7 +125,16 @@ export const BrowserToolbar = () => {
 
   return (
     <>
-      {menuOpen && <div className={s.backdrop} role="presentation" onClick={closeMenu} />}
+      {menuOpen && (
+        <div
+          className={s.backdrop}
+          role="presentation"
+          onClick={closeMenu}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') closeMenu();
+          }}
+        />
+      )}
       <div className={s.bar}>
         <button
           type="button"
@@ -160,9 +160,7 @@ export const BrowserToolbar = () => {
           type="button"
           className={s.iconBtn}
           onClick={() =>
-            state.isLoading
-              ? void window.browserNav.stop()
-              : void window.browserNav.reload()
+            state.isLoading ? void window.browserNav.stop() : void window.browserNav.reload()
           }
           title={state.isLoading ? L.stop : L.reload}
           aria-label={state.isLoading ? L.stop : L.reload}
@@ -228,11 +226,12 @@ export const BrowserToolbar = () => {
             </button>
 
             {menuOpen && (
-              <div
+              <dialog
                 className={s.menu}
-                role="dialog"
+                open
                 aria-modal="true"
                 onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
               >
                 <header className={s.menuHead}>
                   <h2 className={s.menuTitle}>{L.proxyTitle}</h2>
@@ -277,7 +276,7 @@ export const BrowserToolbar = () => {
                     </dd>
                   </div>
                 </dl>
-              </div>
+              </dialog>
             )}
           </div>
         )}

@@ -1,5 +1,5 @@
-import type { StringSessionData } from '@mtcute/node/utils.js';
 import { DC_MAPPING_PROD } from '@mtcute/convert';
+import type { StringSessionData } from '@mtcute/node/utils.js';
 
 const hexToBytes = (hex: string): Uint8Array => {
   if (hex.length % 2 !== 0) throw new Error('hex string has odd length');

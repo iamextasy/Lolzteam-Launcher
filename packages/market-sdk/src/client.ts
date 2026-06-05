@@ -1,5 +1,5 @@
-import ky, { type KyInstance } from 'ky';
 import { LOLZ_CONFIG } from '@lolzteam/shared-ipc';
+import ky, { type KyInstance } from 'ky';
 import type {
   CheckAccountResponse,
   EmailCodeResponse,
@@ -38,7 +38,9 @@ export class MarketClient {
   }
 
   /** `List.Orders` — accounts the user has purchased. */
-  async listOrders(params: { page?: number; categoryId?: number } = {}): Promise<RawOrdersResponse> {
+  async listOrders(
+    params: { page?: number; categoryId?: number } = {},
+  ): Promise<RawOrdersResponse> {
     const search = new URLSearchParams();
     if (params.page) search.set('page', String(params.page));
     if (params.categoryId) search.set('category_id', String(params.categoryId));

@@ -1,4 +1,3 @@
-import log from 'electron-log';
 import { Component, type ErrorInfo, type PropsWithChildren } from 'react';
 
 interface State {
@@ -30,15 +29,9 @@ export class ErrorBoundary extends Component<PropsWithChildren, State> {
             whiteSpace: 'pre-wrap',
           }}
         >
-          <h2 style={{ color: '#ea4c4c', marginBottom: 16 }}>
-            Renderer crash
-          </h2>
-          <div style={{ color: '#00ba78', marginBottom: 12 }}>
-            {this.state.error.message}
-          </div>
-          <pre style={{ fontSize: 12, opacity: 0.8 }}>
-            {this.state.error.stack}
-          </pre>
+          <h2 style={{ color: '#ea4c4c', marginBottom: 16 }}>Renderer crash</h2>
+          <div style={{ color: '#00ba78', marginBottom: 12 }}>{this.state.error.message}</div>
+          <pre style={{ fontSize: 12, opacity: 0.8 }}>{this.state.error.stack}</pre>
         </div>
       );
     }

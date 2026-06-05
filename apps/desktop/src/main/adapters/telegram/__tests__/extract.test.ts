@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import type { AccountDetails } from '@shared-types';
+import { describe, expect, it } from 'vitest';
 import { extractTelegramCreds } from '../extract';
 
 const HEX_256 = 'a'.repeat(512);
@@ -37,9 +37,9 @@ describe('extractTelegramCreds', () => {
       }),
     );
     expect(creds).not.toBeNull();
-    expect(creds!.phone).toBe('+15807812822');
-    expect(creds!.password).toBe('my2fa');
-    expect(creds!.authKey).toBeNull();
+    expect(creds?.phone).toBe('+15807812822');
+    expect(creds?.password).toBe('my2fa');
+    expect(creds?.authKey).toBeNull();
   });
 
   it('reads apiId / apiHash from telegram_json', () => {
@@ -49,8 +49,8 @@ describe('extractTelegramCreds', () => {
         telegram_json: { app_id: 2040, app_hash: 'deadbeef' },
       }),
     );
-    expect(creds!.apiId).toBe(2040);
-    expect(creds!.apiHash).toBe('deadbeef');
+    expect(creds?.apiId).toBe(2040);
+    expect(creds?.apiHash).toBe('deadbeef');
   });
 
   it('parses authKey from loginData.raw with `<hex>:<dc>` shape', () => {
@@ -60,9 +60,9 @@ describe('extractTelegramCreds', () => {
         loginData: { raw: `${HEX_256}:2` },
       }),
     );
-    expect(creds!.authKey).not.toBeNull();
-    expect(creds!.authKey!.authKeyHex).toBe(HEX_256);
-    expect(creds!.authKey!.dcId).toBe(2);
+    expect(creds?.authKey).not.toBeNull();
+    expect(creds?.authKey?.authKeyHex).toBe(HEX_256);
+    expect(creds?.authKey?.dcId).toBe(2);
   });
 
   it('parses authKey from loginData.raw without dc suffix when telegram_json.dc_id is present', () => {
@@ -73,8 +73,8 @@ describe('extractTelegramCreds', () => {
         loginData: { raw: HEX_256_B },
       }),
     );
-    expect(creds!.authKey).not.toBeNull();
-    expect(creds!.authKey!.dcId).toBe(4);
+    expect(creds?.authKey).not.toBeNull();
+    expect(creds?.authKey?.dcId).toBe(4);
   });
 
   it('rejects authKey shorter than 256 bytes', () => {
@@ -84,7 +84,7 @@ describe('extractTelegramCreds', () => {
         loginData: { raw: `${HEX_TOO_SHORT}:1` },
       }),
     );
-    expect(creds!.authKey).toBeNull();
+    expect(creds?.authKey).toBeNull();
   });
 
   it('rejects authKey with an invalid dc id', () => {
@@ -94,7 +94,7 @@ describe('extractTelegramCreds', () => {
         loginData: { raw: `${HEX_256}:99` },
       }),
     );
-    expect(creds!.authKey).toBeNull();
+    expect(creds?.authKey).toBeNull();
   });
 
   it('falls back gracefully when only authKey is available (no phone)', () => {
@@ -104,8 +104,8 @@ describe('extractTelegramCreds', () => {
       }),
     );
     expect(creds).not.toBeNull();
-    expect(creds!.phone).toBe('');
-    expect(creds!.authKey!.dcId).toBe(1);
+    expect(creds?.phone).toBe('');
+    expect(creds?.authKey?.dcId).toBe(1);
   });
 
   it('returns null when there is neither phone nor authKey', () => {
@@ -114,9 +114,7 @@ describe('extractTelegramCreds', () => {
   });
 
   it('rejects implausible phone numbers when authKey is also absent', () => {
-    const creds = extractTelegramCreds(
-      baseDetails({ telegram_phone: '12' }),
-    );
+    const creds = extractTelegramCreds(baseDetails({ telegram_phone: '12' }));
     expect(creds).toBeNull();
   });
 
@@ -128,8 +126,8 @@ describe('extractTelegramCreds', () => {
       }),
     );
     expect(creds).not.toBeNull();
-    expect(creds!.phone).toBe('');
-    expect(creds!.authKey!.dcId).toBe(2);
+    expect(creds?.phone).toBe('');
+    expect(creds?.authKey?.dcId).toBe(2);
   });
 
   it('ignores telegram_password (flag) and reads only telegram_password_value', () => {
@@ -140,6 +138,6 @@ describe('extractTelegramCreds', () => {
         telegram_password_value: 'real',
       }),
     );
-    expect(creds!.password).toBe('real');
+    expect(creds?.password).toBe('real');
   });
 });

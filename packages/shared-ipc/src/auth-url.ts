@@ -34,8 +34,7 @@ export const parseAuthCallback = (raw: string): ParsedAuthCallback => {
   );
   const queryParams = urlObj.searchParams;
 
-  const pick = (key: string): string | null =>
-    fragmentParams.get(key) ?? queryParams.get(key);
+  const pick = (key: string): string | null => fragmentParams.get(key) ?? queryParams.get(key);
 
   const expiresInRaw = pick('expires_in');
   const expiresIn = expiresInRaw ? Number.parseInt(expiresInRaw, 10) : null;

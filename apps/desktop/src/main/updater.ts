@@ -1,7 +1,7 @@
+import { IPC_CHANNELS, type UpdateStatus } from '@shared-ipc';
 import { app, ipcMain } from 'electron';
 import log from 'electron-log/main';
 import electronUpdater from 'electron-updater';
-import { IPC_CHANNELS, type UpdateStatus } from '@shared-ipc';
 import { getMainWindow } from './window/main-window';
 
 const { autoUpdater } = electronUpdater;
@@ -40,9 +40,7 @@ const wireEvents = () => {
   autoUpdater.on('update-downloaded', (info) =>
     emit({ state: 'downloaded', version: info.version }),
   );
-  autoUpdater.on('error', (err) =>
-    emit({ state: 'error', message: err?.message ?? String(err) }),
-  );
+  autoUpdater.on('error', (err) => emit({ state: 'error', message: err?.message ?? String(err) }));
 };
 
 export const registerUpdaterIpc = () => {
@@ -77,6 +75,8 @@ export const registerUpdaterIpc = () => {
   });
 
   setTimeout(() => {
-    void autoUpdater.checkForUpdates().catch((err) => log.error('[updater] initial check failed', err));
+    void autoUpdater
+      .checkForUpdates()
+      .catch((err) => log.error('[updater] initial check failed', err));
   }, 3000);
 };

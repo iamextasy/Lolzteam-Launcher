@@ -1,10 +1,10 @@
-import type { PropsWithChildren } from 'react';
 import type { AuthSession } from '@shared-types';
+import type { PropsWithChildren } from 'react';
 import { useView } from '~/stores/view';
 import { UpdateBanner } from '~/widgets/UpdateBanner/UpdateBanner';
+import s from './Shell.module.scss';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
-import s from './Shell.module.scss';
 
 interface ShellProps {
   session: AuthSession | null;

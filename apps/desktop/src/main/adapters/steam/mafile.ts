@@ -2,10 +2,7 @@ import { createHmac } from 'node:crypto';
 
 const STEAM_ALPHABET = '23456789BCDFGHJKMNPQRTVWXY';
 
-export const generateSteamGuardCode = (
-  sharedSecretBase64: string,
-  now = Date.now(),
-): string => {
+export const generateSteamGuardCode = (sharedSecretBase64: string, now = Date.now()): string => {
   const key = Buffer.from(sharedSecretBase64, 'base64');
   const time = BigInt(Math.floor(now / 1000 / 30));
 
@@ -13,12 +10,12 @@ export const generateSteamGuardCode = (
   buf.writeBigUInt64BE(time);
 
   const hmac = createHmac('sha1', key).update(buf).digest();
-  const offset = hmac[hmac.length - 1]! & 0x0f;
+  const offset = hmac[hmac.length - 1] & 0x0f;
   let code =
-    ((hmac[offset]! & 0x7f) << 24) |
-    ((hmac[offset + 1]! & 0xff) << 16) |
-    ((hmac[offset + 2]! & 0xff) << 8) |
-    (hmac[offset + 3]! & 0xff);
+    ((hmac[offset] & 0x7f) << 24) |
+    ((hmac[offset + 1] & 0xff) << 16) |
+    ((hmac[offset + 2] & 0xff) << 8) |
+    (hmac[offset + 3] & 0xff);
 
   let out = '';
   for (let i = 0; i < 5; i++) {

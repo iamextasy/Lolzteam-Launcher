@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react';
-import { CloudOff, RefreshCw } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import type { AuthStatus } from '@shared-types';
+import { CloudOff, RefreshCw } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import backgroundUrl from '~/assets/background.svg';
 import s from './ConnectionScreen.module.scss';
 

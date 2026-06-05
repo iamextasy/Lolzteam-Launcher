@@ -1,4 +1,4 @@
-import { access, constants } from 'node:fs/promises';
+import { constants, access } from 'node:fs/promises';
 
 // Returns true iff `path` exists (any node type, no permission check).
 export const fileExists = async (path: string): Promise<boolean> => {

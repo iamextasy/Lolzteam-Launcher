@@ -1,8 +1,8 @@
-import { app, safeStorage } from 'electron';
+import { EventEmitter } from 'node:events';
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
+import { app, safeStorage } from 'electron';
 import log from 'electron-log/main';
-import { EventEmitter } from 'node:events';
 
 const FILE_NAME = 'auth.bin';
 

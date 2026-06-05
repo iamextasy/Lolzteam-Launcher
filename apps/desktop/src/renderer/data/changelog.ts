@@ -12,50 +12,32 @@ export const CHANGELOG: ChangelogEntry[] = [
     version: '0.4.4',
     date: '2026-06-05',
     changes: {
-      ru: [
-        'Исправление работы приложения при неработающем API/интернете',
-      ],
-      en: [
-        'Fixed app behavior when the API/internet is unavailable',
-      ],
+      ru: ['Исправление работы приложения при неработающем API/интернете'],
+      en: ['Fixed app behavior when the API/internet is unavailable'],
     },
   },
   {
     version: '0.4.3',
     date: '2026-06-02',
     changes: {
-      ru: [
-        'На странице входа добавлена информация о статусе подключения к API',
-      ],
-      en: [
-        'Added an API connection status indicator on the login screen',
-      ],
+      ru: ['На странице входа добавлена информация о статусе подключения к API'],
+      en: ['Added an API connection status indicator on the login screen'],
     },
   },
   {
     version: '0.4.2',
     date: '2026-06-02',
     changes: {
-      ru: [
-        'Редизайн страницы входа',
-        'Добавлен переключатель языка прямо на странице входа',
-      ],
-      en: [
-        'Redesigned the login screen',
-        'Added a language switcher right on the login screen',
-      ],
+      ru: ['Редизайн страницы входа', 'Добавлен переключатель языка прямо на странице входа'],
+      en: ['Redesigned the login screen', 'Added a language switcher right on the login screen'],
     },
   },
   {
     version: '0.4.1',
     date: '2026-06-02',
     changes: {
-      ru: [
-        'Исправление ошибок',
-      ],
-      en: [
-        'Bug fixes',
-      ],
+      ru: ['Исправление ошибок'],
+      en: ['Bug fixes'],
     },
   },
   {
@@ -120,36 +102,24 @@ export const CHANGELOG: ChangelogEntry[] = [
     version: '0.1.2',
     date: '2026-05-31',
     changes: {
-      ru: [
-        'Исправлен баг отображения перепроданных аккаунтов',
-      ],
-      en: [
-        'Fixed a bug with the display of resold accounts',
-      ],
+      ru: ['Исправлен баг отображения перепроданных аккаунтов'],
+      en: ['Fixed a bug with the display of resold accounts'],
     },
   },
   {
     version: '0.1.1',
     date: '2026-05-31',
     changes: {
-      ru: [
-        'Исправлена загрузка аккаунтов',
-      ],
-      en: [
-        'Fixed account loading',
-      ],
+      ru: ['Исправлена загрузка аккаунтов'],
+      en: ['Fixed account loading'],
     },
   },
   {
     version: '0.1.0',
     date: '2026-05-31',
     changes: {
-      ru: [
-        'Релиз приложения',
-      ],
-      en: [
-        'Initial release',
-      ],
+      ru: ['Релиз приложения'],
+      en: ['Initial release'],
     },
   },
 ];

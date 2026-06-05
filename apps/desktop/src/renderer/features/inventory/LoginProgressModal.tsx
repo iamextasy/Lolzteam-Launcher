@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
-import { AlertCircle, Check, Loader2 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import type { TFunction } from 'i18next';
 import type { LoginStep } from '@adapter-contract';
+import type { TFunction } from 'i18next';
+import { AlertCircle, Check, Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { type LoginService, useLoginSession } from '~/stores/loginSession';
 import { Modal } from '~/widgets/Modal/Modal';
-import { useLoginSession, type LoginService } from '~/stores/loginSession';
 import s from './LoginProgressModal.module.scss';
 
 interface StepDef {
@@ -49,9 +49,7 @@ const visibleSteps = (
 ): StepDef[] => {
   if (service !== 'steam') return [...stepsByService[service]];
   const skipEmail = !awaitingEmail && currentStep !== 'fetching-email-code';
-  return stepsByService.steam.filter((s) =>
-    s.step === 'fetching-email-code' ? !skipEmail : true,
-  );
+  return stepsByService.steam.filter((s) => (s.step === 'fetching-email-code' ? !skipEmail : true));
 };
 
 type Status = 'done' | 'active' | 'pending' | 'failed';
@@ -71,8 +69,7 @@ const statusFor = (
 
 export const LoginProgressModal = () => {
   const { t } = useTranslation();
-  const { isOpen, itemId, accountTitle, service, step, detail, error, close } =
-    useLoginSession();
+  const { isOpen, itemId, accountTitle, service, step, detail, error, close } = useLoginSession();
 
   // Auto-dismiss shortly after a successful sign-in so the modal doesn't linger
   // on screen (and can't be revived by a stray event or re-opened by accident).

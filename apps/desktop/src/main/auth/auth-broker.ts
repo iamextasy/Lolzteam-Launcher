@@ -1,8 +1,8 @@
-import { BrowserWindow, session } from 'electron';
 import { randomUUID } from 'node:crypto';
-import log from 'electron-log/main';
 import { IPC_CHANNELS, parseAuthCallback } from '@shared-ipc';
 import type { AuthTokenPayload } from '@shared-types';
+import { type BrowserWindow, session } from 'electron';
+import log from 'electron-log/main';
 import { saveToken } from './token-store';
 
 type GetWindow = () => BrowserWindow | null;
@@ -56,7 +56,11 @@ const isRecentToken = (token: string): boolean => {
 
 export type AuthOutcome =
   | { ok: true }
-  | { ok: false; reason: 'no-token' | 'state-mismatch' | 'duplicate' | 'oauth-error'; message?: string };
+  | {
+      ok: false;
+      reason: 'no-token' | 'state-mismatch' | 'duplicate' | 'oauth-error';
+      message?: string;
+    };
 
 export const acceptAuthCallback = async (
   url: string,

@@ -7,9 +7,7 @@ import type {
 
 export type LoginMethod = 'native' | 'web';
 
-export type ProbeResult =
-  | { available: true }
-  | { available: false; reason: string };
+export type ProbeResult = { available: true } | { available: false; reason: string };
 
 export interface LoginResult {
   ok: boolean;

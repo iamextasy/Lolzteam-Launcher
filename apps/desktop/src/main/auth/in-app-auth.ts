@@ -1,5 +1,5 @@
-import { BrowserWindow, ipcMain } from 'electron';
 import { IPC_CHANNELS, LOLZ_CONFIG } from '@shared-ipc';
+import { BrowserWindow, ipcMain } from 'electron';
 import { MAIN_COLORS } from '../theme';
 import { acceptAuthCallback, clearAuthSession, issueState } from './auth-broker';
 

@@ -1,6 +1,6 @@
-import { Boxes, ShoppingBag, Settings, Wallet } from 'lucide-react';
+import { Boxes, Settings, ShoppingBag, Wallet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useView, type ViewId } from '~/stores/view';
+import { type ViewId, useView } from '~/stores/view';
 import s from './Sidebar.module.scss';
 
 interface NavItem {
@@ -26,15 +26,16 @@ export const Sidebar = () => {
     <nav className={s.dock} aria-label="Primary">
       {NAV.map((item) => {
         const Icon = item.icon;
-        const enabled = item.view !== undefined;
-        const active = enabled && view === item.view;
+        const viewId = item.view;
+        const enabled = viewId !== undefined;
+        const active = enabled && view === viewId;
         return (
           <button
             key={item.id}
             type="button"
             className={`${s.navItem} ${active ? s.navItemActive : ''}`}
             disabled={!enabled}
-            onClick={enabled ? () => setView(item.view!) : undefined}
+            onClick={enabled ? () => setView(viewId) : undefined}
           >
             <Icon size={18} />
             <span>{t(item.labelKey)}</span>

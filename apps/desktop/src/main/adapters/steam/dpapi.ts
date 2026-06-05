@@ -15,14 +15,15 @@ const CRC32_TABLE = (() => {
 const crc32 = (buf: Buffer): number => {
   let crc = 0xffffffff;
   for (let i = 0; i < buf.length; i++) {
-    crc = (crc >>> 8) ^ CRC32_TABLE[(crc ^ buf[i]!) & 0xff]!;
+    const byte = buf[i];
+    crc = (crc >>> 8) ^ CRC32_TABLE[(crc ^ byte) & 0xff];
   }
   return (crc ^ 0xffffffff) >>> 0;
 };
 
 export const computeConnectCacheHdr = (login: string): string => {
   const value = crc32(Buffer.from(login, 'utf8'));
-  return value.toString(16) + '1';
+  return `${value.toString(16)}1`;
 };
 
 const PS_SCRIPT = `
@@ -77,7 +78,7 @@ export const dpapiProtect = (data: Buffer, entropy: Buffer): Promise<string> =>
       resolve(hex);
     });
 
-    child.stdin.write(data.toString('base64') + '\n');
-    child.stdin.write(entropy.toString('base64') + '\n');
+    child.stdin.write(`${data.toString('base64')}\n`);
+    child.stdin.write(`${entropy.toString('base64')}\n`);
     child.stdin.end();
   });

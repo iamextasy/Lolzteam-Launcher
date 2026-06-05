@@ -1,6 +1,6 @@
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { fileExists, getTdataDir } from '../paths';
 
@@ -34,9 +34,9 @@ describe('getTdataDir', () => {
   });
 
   it('rejects when the parent directory does not exist', async () => {
-    await expect(
-      getTdataDir(join(tempDir, 'no-such-dir', 'Telegram.exe')),
-    ).rejects.toBeInstanceOf(Error);
+    await expect(getTdataDir(join(tempDir, 'no-such-dir', 'Telegram.exe'))).rejects.toBeInstanceOf(
+      Error,
+    );
   });
 
   it('rejects an empty path', async () => {

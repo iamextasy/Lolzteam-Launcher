@@ -22,11 +22,6 @@
   },
   "packageManager": "pnpm@10.33.0",
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "electron",
-      "esbuild",
-      "@biomejs/biome",
-      "@parcel/watcher"
-    ]
+    "onlyBuiltDependencies": ["electron", "esbuild", "@biomejs/biome", "@parcel/watcher"]
   }
 }

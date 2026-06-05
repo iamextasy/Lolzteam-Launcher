@@ -1,10 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import type { AccountSummary, LauncherSettings, ServiceId } from '@shared-types';
 import { useQuery } from '@tanstack/react-query';
 import { AlertCircle, ArrowDownUp, Check, ListFilter, RefreshCw, Search, X } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { AccountSummary, LauncherSettings, ServiceId } from '@shared-types';
-import { AccountCard } from './AccountCard';
-import { SkeletonCard } from './InventorySkeleton';
 import {
   isStreamService,
   mergeWithStream,
@@ -13,14 +11,27 @@ import {
 } from '~/stores/accountsStream';
 import { useSettings } from '~/stores/settings';
 import { Modal } from '~/widgets/Modal/Modal';
+import { AccountCard } from './AccountCard';
+import { SkeletonCard } from './InventorySkeleton';
 import s from './InventoryView.module.scss';
 
 const CHUNK = 24;
 
 const SKELETON_INITIAL = 8;
 const SKELETON_TAIL = 4;
+const SKELETON_INITIAL_IDS = Array.from(
+  { length: SKELETON_INITIAL },
+  (_, i) => `skeleton-initial-${i}`,
+);
+const SKELETON_TAIL_IDS = Array.from({ length: SKELETON_TAIL }, (_, i) => `skeleton-tail-${i}`);
 
-const SUPPORTED_SERVICES = ['steam', 'telegram', 'tiktok', 'instagram', 'discord'] as const satisfies readonly ServiceId[];
+const SUPPORTED_SERVICES = [
+  'steam',
+  'telegram',
+  'tiktok',
+  'instagram',
+  'discord',
+] as const satisfies readonly ServiceId[];
 type SupportedService = (typeof SUPPORTED_SERVICES)[number];
 const isSupportedService = (id: ServiceId | null): id is SupportedService =>
   id !== null && (SUPPORTED_SERVICES as readonly string[]).includes(id);
@@ -78,12 +89,7 @@ const sortValue = (item: AccountSummary, key: SortKey): number | null => {
   }
 };
 
-const compareItems = (
-  a: AccountSummary,
-  b: AccountSummary,
-  key: SortKey,
-  dir: SortDir,
-): number => {
+const compareItems = (a: AccountSummary, b: AccountSummary, key: SortKey, dir: SortDir): number => {
   const va = sortValue(a, key);
   const vb = sortValue(b, key);
   if (va === null && vb === null) return 0;
@@ -151,8 +157,7 @@ export const InventoryView = () => {
 
   const setSortKey = (key: SortKey) => void persistSettings({ inventorySortKey: key });
   const setSortDir = (dir: SortDir) => void persistSettings({ inventorySortDir: dir });
-  const toggleHideInvalid = () =>
-    void persistSettings({ inventoryHideInvalid: !hideInvalid });
+  const toggleHideInvalid = () => void persistSettings({ inventoryHideInvalid: !hideInvalid });
 
   const resetFilters = () =>
     void persistSettings({
@@ -168,10 +173,7 @@ export const InventoryView = () => {
   });
 
   const rawItems = query.data ?? [];
-  const items = useMemo(
-    () => rawItems.filter((it) => isSupportedService(it.category)),
-    [rawItems],
-  );
+  const items = useMemo(() => rawItems.filter((it) => isSupportedService(it.category)), [rawItems]);
   const buckets = useMemo(
     () => buildBuckets(items, t('inventory.filter.all'), loaded, streaming),
     [items, t, loaded, streaming],
@@ -188,19 +190,20 @@ export const InventoryView = () => {
     return [...filtered].sort((a, b) => compareItems(a, b, sortKey, sortDir));
   }, [items, filter, hideInvalid, trimmedSearch, sortKey, sortDir]);
 
+  const _resetKey = `${filter}|${hideInvalid}|${trimmedSearch}|${sortKey}|${sortDir}`;
+
   useEffect(() => {
+    void _resetKey;
     setLimit(CHUNK);
     document.querySelector('[data-scroll-root]')?.scrollTo({ top: 0 });
-  }, [filter, hideInvalid, trimmedSearch, sortKey, sortDir]);
+  }, [_resetKey]);
 
   const shown = visible.slice(0, limit);
   const hasMore = limit < visible.length;
 
   const allDone = SUPPORTED_SERVICES.every((id) => loaded.has(id));
   const activeLoading =
-    filter === 'all'
-      ? streaming && !allDone
-      : isSupportedService(filter) && !loaded.has(filter);
+    filter === 'all' ? streaming && !allDone : isSupportedService(filter) && !loaded.has(filter);
 
   const fullySettled = !streaming && !query.isLoading && !query.isFetching;
 
@@ -218,7 +221,7 @@ export const InventoryView = () => {
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [hasMore, visible.length]);
+  }, [hasMore]);
 
   const refresh = () => {
     if (streaming) return;
@@ -247,9 +250,7 @@ export const InventoryView = () => {
         <button
           type="button"
           className={s.retry}
-          onClick={() =>
-            window.launcher.app.openExternal('https://lzt.market/orders')
-          }
+          onClick={() => window.launcher.app.openExternal('https://lzt.market/orders')}
         >
           {t('inventory.openMarket')}
         </button>
@@ -264,9 +265,7 @@ export const InventoryView = () => {
         <button
           type="button"
           className={s.retry}
-          onClick={() =>
-            window.launcher.app.openExternal('https://lzt.market/orders')
-          }
+          onClick={() => window.launcher.app.openExternal('https://lzt.market/orders')}
         >
           {t('inventory.openMarket')}
         </button>
@@ -319,12 +318,7 @@ export const InventoryView = () => {
         </div>
 
         <div className={s.controlsActions}>
-          <button
-            type="button"
-            className={s.refresh}
-            onClick={refresh}
-            disabled={streaming}
-          >
+          <button type="button" className={s.refresh} onClick={refresh} disabled={streaming}>
             <RefreshCw size={14} className={streaming ? s.spin : ''} />
             <span>{t('inventory.refresh')}</span>
           </button>
@@ -372,8 +366,7 @@ export const InventoryView = () => {
 
             <button
               type="button"
-              role="checkbox"
-              aria-checked={hideInvalid}
+              aria-pressed={hideInvalid}
               className={s.filterOption}
               onClick={() => void toggleHideInvalid()}
             >
@@ -396,8 +389,8 @@ export const InventoryView = () => {
 
       {visible.length === 0 && activeLoading ? (
         <div className={s.grid}>
-          {Array.from({ length: SKELETON_INITIAL }, (_, i) => (
-            <SkeletonCard key={i} />
+          {SKELETON_INITIAL_IDS.map((id) => (
+            <SkeletonCard key={id} />
           ))}
         </div>
       ) : visible.length === 0 ? (
@@ -410,11 +403,7 @@ export const InventoryView = () => {
           {shown.map((item) => (
             <AccountCard key={item.itemId} item={item} />
           ))}
-          {!hasMore &&
-            activeLoading &&
-            Array.from({ length: SKELETON_TAIL }, (_, i) => (
-              <SkeletonCard key={`tail-${i}`} />
-            ))}
+          {!hasMore && activeLoading && SKELETON_TAIL_IDS.map((id) => <SkeletonCard key={id} />)}
         </div>
       )}
 

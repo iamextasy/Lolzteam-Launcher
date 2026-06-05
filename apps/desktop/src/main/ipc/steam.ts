@@ -1,6 +1,6 @@
+import { IPC_CHANNELS } from '@shared-ipc';
 import { ipcMain } from 'electron';
 import log from 'electron-log/main';
-import { IPC_CHANNELS } from '@shared-ipc';
 import { clearSteamSession } from '../adapters/steam/clear-session';
 
 export const registerSteamIpc = (): void => {

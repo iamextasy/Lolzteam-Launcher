@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import { Download, RefreshCw, RotateCw, X } from 'lucide-react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdater } from '~/stores/updater';
 import s from './UpdateBanner.module.scss';
@@ -28,9 +28,7 @@ export const UpdateBanner = () => {
     body = (
       <>
         <div className={s.text}>
-          <span className={s.title}>
-            {t('update.available', { version: status.version })}
-          </span>
+          <span className={s.title}>{t('update.available', { version: status.version })}</span>
         </div>
         <div className={s.actions}>
           <button type="button" className={s.primary} onClick={download}>
@@ -64,9 +62,7 @@ export const UpdateBanner = () => {
     body = (
       <>
         <div className={s.text}>
-          <span className={s.title}>
-            {t('update.ready', { version: status.version })}
-          </span>
+          <span className={s.title}>{t('update.ready', { version: status.version })}</span>
         </div>
         <div className={s.actions}>
           <button type="button" className={s.primary} onClick={install}>
@@ -114,8 +110,6 @@ export const UpdateBanner = () => {
   }
 
   return (
-    <div className={`${s.banner} ${state === 'error' ? s.bannerError : ''}`} role="status">
-      {body}
-    </div>
+    <output className={`${s.banner} ${state === 'error' ? s.bannerError : ''}`}>{body}</output>
   );
 };

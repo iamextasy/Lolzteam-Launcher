@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import { app, net, session, type Session } from 'electron';
-import log from 'electron-log/main';
 import type { ProxyTestResult } from '@shared-ipc';
 import type { ProxyEntry } from '@shared-types';
+import { net, type Session, app, session } from 'electron';
+import log from 'electron-log/main';
 
 type ProxyCreds = { username: string; password: string };
 
@@ -24,10 +24,7 @@ const registerProxyCreds = (
   }
 };
 
-export const applyProxyToSession = async (
-  ses: Session,
-  entry: ProxyEntry,
-): Promise<void> => {
+export const applyProxyToSession = async (ses: Session, entry: ProxyEntry): Promise<void> => {
   registerProxyCreds(entry);
   await ses.setProxy({ proxyRules: proxyRulesFor(entry) });
 };

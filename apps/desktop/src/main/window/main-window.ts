@@ -1,6 +1,6 @@
-import { BrowserWindow, shell } from 'electron';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { BrowserWindow, shell } from 'electron';
 import iconUrl from '../../renderer/assets/favicon.ico?asset';
 import { MAIN_COLORS } from '../theme';
 

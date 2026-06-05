@@ -1,11 +1,11 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { ArrowLeft, Check, Loader2, Pencil, Plus, Trash2, Wifi } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import type { LauncherSettings, ProxyEntry, ProxyTestResult, ServiceId } from '@shared-types';
 import { PROXY_CAPABLE_SERVICES } from '@shared-types';
+import { ArrowLeft, Check, Loader2, Pencil, Plus, Trash2, Wifi } from 'lucide-react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { formatAgo } from '~/lib/time';
 import { Modal } from '~/widgets/Modal/Modal';
 import { Tooltip } from '~/widgets/Tooltip/Tooltip';
-import { formatAgo } from '~/lib/time';
 import s from './ProxyView.module.scss';
 
 const SERVICE_LABELS: Record<string, string> = {
@@ -51,7 +51,7 @@ export const ProxyView = ({ onBack }: ProxyViewProps) => {
     if (!ta) return;
     ta.style.height = 'auto';
     ta.style.height = `${ta.scrollHeight}px`;
-  }, [bulk]);
+  });
 
   const lineCount = Math.max(3, bulk.split('\n').length);
 
@@ -161,7 +161,12 @@ export const ProxyView = ({ onBack }: ProxyViewProps) => {
     <div className={s.container}>
       <div className={s.block}>
         <header className={s.header}>
-          <button type="button" className={s.back} onClick={onBack} aria-label={t('settings.proxy.back')}>
+          <button
+            type="button"
+            className={s.back}
+            onClick={onBack}
+            aria-label={t('settings.proxy.back')}
+          >
             <ArrowLeft size={18} />
           </button>
           <span className={s.headerTitle}>{t('settings.proxy.menuLabel')}</span>
@@ -218,7 +223,7 @@ export const ProxyView = ({ onBack }: ProxyViewProps) => {
             <div className={s.editor}>
               <div className={s.gutter} aria-hidden>
                 {Array.from({ length: lineCount }, (_, i) => (
-                  <span key={i} className={s.lineNo}>
+                  <span key={String(i + 1)} className={s.lineNo}>
                     {i + 1}
                   </span>
                 ))}
@@ -247,8 +252,7 @@ export const ProxyView = ({ onBack }: ProxyViewProps) => {
             </button>
             <button
               type="button"
-              role="checkbox"
-              aria-checked={checkOnAdd}
+              aria-pressed={checkOnAdd}
               className={s.checkOnAdd}
               onClick={() => setCheckOnAdd((v) => !v)}
             >
@@ -296,12 +300,15 @@ export const ProxyView = ({ onBack }: ProxyViewProps) => {
                       ) : res ? (
                         <span className={s.rowStatus}>
                           <span className={res.ok ? s.resultOk : s.resultFail}>
-                            {res.ok ? t('settings.proxy.statusValid') : t('settings.proxy.statusInvalid')}
-                            {' '}
+                            {res.ok
+                              ? t('settings.proxy.statusValid')
+                              : t('settings.proxy.statusInvalid')}{' '}
                             ({formatAgo(res.checkedAt, i18n.language)})
                           </span>
                           {res.ok && res.ms !== undefined && (
-                            <span className={s.rowPing}>{t('settings.proxy.ping', { ms: res.ms })}</span>
+                            <span className={s.rowPing}>
+                              {t('settings.proxy.ping', { ms: res.ms })}
+                            </span>
                           )}
                         </span>
                       ) : null}
@@ -373,16 +380,8 @@ export const ProxyView = ({ onBack }: ProxyViewProps) => {
       )}
 
       {editing && (
-        <Modal
-          title={t('settings.proxy.editTitle')}
-          closable
-          onClose={() => setEditing(null)}
-        >
-          <ProxyEditForm
-            entry={editing}
-            onCancel={() => setEditing(null)}
-            onSave={saveEdit}
-          />
+        <Modal title={t('settings.proxy.editTitle')} closable onClose={() => setEditing(null)}>
+          <ProxyEditForm entry={editing} onCancel={() => setEditing(null)} onSave={saveEdit} />
         </Modal>
       )}
     </div>
@@ -432,7 +431,6 @@ const ProxyEditForm = ({ entry, onCancel, onSave }: ProxyEditFormProps) => {
           value={host}
           onChange={(e) => setHost(e.target.value)}
           spellCheck={false}
-          autoFocus
         />
       </label>
       <label className={s.field}>

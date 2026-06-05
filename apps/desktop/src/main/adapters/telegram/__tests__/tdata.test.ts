@@ -1,18 +1,15 @@
-import { describe, expect, it } from 'vitest';
 import { DC_MAPPING_PROD } from '@mtcute/convert';
 import type { StringSessionData } from '@mtcute/node/utils.js';
+import { describe, expect, it } from 'vitest';
 import { mergeSessions } from '../tdata';
 
-const DC2 = DC_MAPPING_PROD[2]!;
+const DC2 = DC_MAPPING_PROD[2] ?? 0;
 
 const session = (userId: number | null): StringSessionData => ({
   version: 3,
   primaryDcs: DC2,
   authKey: new Uint8Array(256),
-  self:
-    userId === null
-      ? null
-      : { userId, isBot: false, isPremium: false, usernames: [] },
+  self: userId === null ? null : { userId, isBot: false, isPremium: false, usernames: [] },
 });
 
 const ids = (sessions: StringSessionData[]): (number | null | undefined)[] =>

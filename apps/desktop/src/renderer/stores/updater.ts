@@ -1,5 +1,5 @@
-import { create } from 'zustand';
 import type { UpdateStatus } from '@shared-ipc';
+import { create } from 'zustand';
 
 interface UpdaterState {
   status: UpdateStatus | null;

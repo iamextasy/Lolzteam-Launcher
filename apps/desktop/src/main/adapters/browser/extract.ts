@@ -34,8 +34,7 @@ interface RawCookie {
   sameSite?: unknown;
 }
 
-const asString = (v: unknown): string | null =>
-  typeof v === 'string' && v.length > 0 ? v : null;
+const asString = (v: unknown): string | null => (typeof v === 'string' && v.length > 0 ? v : null);
 
 const SAME_SITE_VALUES = ['unspecified', 'no_restriction', 'lax', 'strict'] as const;
 const normalizeSameSite = (v: unknown): InjectableCookie['sameSite'] => {

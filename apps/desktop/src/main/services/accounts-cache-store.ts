@@ -1,8 +1,8 @@
-import { app } from 'electron';
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
-import log from 'electron-log/main';
 import type { AccountSummary } from '@shared-types';
+import { app } from 'electron';
+import log from 'electron-log/main';
 
 const FILE_NAME = 'accounts-cache.json';
 

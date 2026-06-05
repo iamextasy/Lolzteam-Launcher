@@ -1,5 +1,5 @@
-import { BrowserWindow, ipcMain, shell } from 'electron';
 import { IPC_CHANNELS, LOLZ_CONFIG } from '@shared-ipc';
+import { type BrowserWindow, ipcMain, shell } from 'electron';
 import { acceptAuthCallback, issueState } from './auth-broker';
 
 type GetWindow = () => BrowserWindow | null;

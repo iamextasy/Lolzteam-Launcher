@@ -30,10 +30,7 @@ const PHONE_KEYS = ['telegram_phone', 'account_phone', 'phone'] as const;
 // not the actual password, so it must never be used as a credential.
 const PASSWORD_KEYS = ['telegram_password_value', 'twoFa', 'two_fa'] as const;
 
-const pickFromKeys = (
-  source: Record<string, unknown>,
-  keys: readonly string[],
-): string | null => {
+const pickFromKeys = (source: Record<string, unknown>, keys: readonly string[]): string | null => {
   for (const k of keys) {
     const found = asString(source[k]);
     if (found) return found;
@@ -101,10 +98,7 @@ const isProdDcId = (dcId: number): boolean =>
 //   "<512-hex-chars>:<dc_id>"   ← preferred: includes the DC
 //   "<512-hex-chars>"           ← rare: no DC suffix, must look it up elsewhere
 // Anything else (truncated key, non-hex prefix) → null and we fall back to phone+code.
-const parseAuthKeyRaw = (
-  raw: string,
-  fallbackDcId: number | null,
-): TelegramAuthKey | null => {
+const parseAuthKeyRaw = (raw: string, fallbackDcId: number | null): TelegramAuthKey | null => {
   const trimmed = raw.trim();
   if (!trimmed) return null;
 

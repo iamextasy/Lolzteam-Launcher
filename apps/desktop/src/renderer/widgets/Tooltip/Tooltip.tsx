@@ -1,4 +1,6 @@
 import {
+  type ReactElement,
+  type ReactNode,
   cloneElement,
   useCallback,
   useEffect,
@@ -6,8 +8,6 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-  type ReactElement,
-  type ReactNode,
 } from 'react';
 import { createPortal } from 'react-dom';
 import s from './Tooltip.module.scss';
@@ -45,11 +45,11 @@ export const Tooltip = ({
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<Pos | null>(null);
 
-  const clearTimer = () => {
+  const clearTimer = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
-  };
+  }, []);
 
-  useEffect(() => () => clearTimer(), []);
+  useEffect(() => () => clearTimer(), [clearTimer]);
 
   const show = () => {
     if (disabled) return;
@@ -83,7 +83,7 @@ export const Tooltip = ({
     left = Math.max(EDGE, Math.min(left, window.innerWidth - b.width - EDGE));
 
     setPos({ left, top, placement: side });
-  }, [open, placement, label]);
+  }, [open, placement]);
 
   const child = children as ReactElement<{
     ref?: React.Ref<HTMLElement>;

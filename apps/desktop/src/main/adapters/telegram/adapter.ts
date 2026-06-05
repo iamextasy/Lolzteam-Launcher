@@ -7,12 +7,12 @@ import type {
   ProbeResult,
   ServiceAdapter,
 } from '@adapter-contract';
-import type { AccountDetails } from '@shared-types';
 import type { StringSessionData } from '@mtcute/node/utils.js';
+import type { AccountDetails } from '@shared-types';
 import { failLogin as fail } from '../_shared/fail';
 import { extractTelegramCreds } from './extract';
-import { killTelegramProcesses, waitForTelegramExit } from './process';
 import { ensurePortableMarker, fileExists, getTdataDir } from './paths';
+import { killTelegramProcesses, waitForTelegramExit } from './process';
 import { buildOfflineSession } from './session';
 import { writeProxySettings } from './settings-tdf';
 import { mergeSessions, readExistingSessions, toSessionData, writeTdata } from './tdata';
@@ -58,7 +58,9 @@ export const telegramAdapter: ServiceAdapter = {
     if (!creds) return fail('У этого аккаунта нет данных Telegram в lzt.market');
 
     if (!creds.authKey) {
-      return fail('Нет данных сессии Telegram для восстановления (loginData.raw пуст или некорректен)');
+      return fail(
+        'Нет данных сессии Telegram для восстановления (loginData.raw пуст или некорректен)',
+      );
     }
 
     ctx.onProgress?.({ step: 'building-tdata' });
@@ -99,9 +101,7 @@ export const telegramAdapter: ServiceAdapter = {
     const incoming = toSessionData(session);
     const existing = await readExistingSessions(tdataDir, ctx.log);
     const merged = mergeSessions(incoming, existing);
-    ctx.log.info(
-      `[telegram] writing tdata to ${tdataDir}: ${merged.length} account(s) (offline)`,
-    );
+    ctx.log.info(`[telegram] writing tdata to ${tdataDir}: ${merged.length} account(s) (offline)`);
     // Write into a staging dir first, then swap it into place. This way a failed
     // write never destroys the existing tdata — we only rm the live folder once
     // the new one is fully written.
@@ -120,9 +120,7 @@ export const telegramAdapter: ServiceAdapter = {
     if (ctx.proxy) {
       try {
         await writeProxySettings(tdataDir, ctx.proxy);
-        ctx.log.info(
-          `[telegram] proxy settings written: ${ctx.proxy.host}:${ctx.proxy.port}`,
-        );
+        ctx.log.info(`[telegram] proxy settings written: ${ctx.proxy.host}:${ctx.proxy.port}`);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         ctx.log.warn(`[telegram] failed to write proxy settings (continuing direct): ${msg}`);

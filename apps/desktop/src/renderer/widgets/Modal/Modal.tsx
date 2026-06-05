@@ -1,6 +1,6 @@
-import { useEffect, type ReactNode } from 'react';
-import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
+import { type ReactNode, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import s from './Modal.module.scss';
 
@@ -23,14 +23,24 @@ export const Modal = ({ title, onClose, closable = true, children }: ModalProps)
     return () => window.removeEventListener('keydown', onKey);
   }, [closable, onClose]);
 
-  const handleBackdrop = (e: React.MouseEvent) => {
+  const handleBackdrop = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!closable) return;
     if (e.target === e.currentTarget) onClose?.();
   };
 
+  const handleBackdropKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!closable) return;
+    if (e.key === 'Enter' || e.key === ' ') onClose?.();
+  };
+
   return createPortal(
-    <div className={s.backdrop} onClick={handleBackdrop} role="presentation">
-      <div className={s.card} role="dialog" aria-modal="true" aria-label={title}>
+    <div
+      className={s.backdrop}
+      onClick={handleBackdrop}
+      onKeyDown={handleBackdropKey}
+      role="presentation"
+    >
+      <dialog className={s.card} open aria-label={title}>
         <header className={s.head}>
           <h2 className={s.title}>{title}</h2>
           {closable && (
@@ -45,7 +55,7 @@ export const Modal = ({ title, onClose, closable = true, children }: ModalProps)
           )}
         </header>
         <div className={s.body}>{children}</div>
-      </div>
+      </dialog>
     </div>,
     document.body,
   );

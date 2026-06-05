@@ -4,14 +4,9 @@ export interface RawMarketTagEntry {
   [key: string]: unknown;
 }
 
-export type RawMarketTags =
-  | Record<string, RawMarketTagEntry>
-  | RawMarketTagEntry[]
-  | null;
+export type RawMarketTags = Record<string, RawMarketTagEntry> | RawMarketTagEntry[] | null;
 
-export type RawMarketBuyer =
-  | { operation_date?: number | string }
-  | Record<string, unknown>;
+export type RawMarketBuyer = { operation_date?: number | string } | Record<string, unknown>;
 
 export interface RawMarketSteamGameRecord {
   appid?: number | string;
@@ -106,9 +101,7 @@ export type EmailCodeResponse =
   | { item?: RawMarketItem; codeData: EmailCodeData }
   | { error: string; errors?: string[] | string };
 
-export type CheckAccountResponse =
-  | { status: string; item: RawMarketItem }
-  | { errors: string[] };
+export type CheckAccountResponse = { status: string; item: RawMarketItem } | { errors: string[] };
 
 export interface RawProfileResponse {
   user: {

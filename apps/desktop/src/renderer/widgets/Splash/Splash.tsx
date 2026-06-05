@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import loadingVideo from '~/assets/loading.webm';
 import s from './Splash.module.scss';
 
@@ -14,16 +14,16 @@ export const Splash = ({ onDone }: SplashProps) => {
   const [leaving, setLeaving] = useState(false);
   const finishedRef = useRef(false);
 
-  const finish = () => {
+  const finish = useCallback(() => {
     if (finishedRef.current) return;
     finishedRef.current = true;
     setLeaving(true);
-  };
+  }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(finish, MAX_DURATION);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [finish]);
 
   return (
     <div

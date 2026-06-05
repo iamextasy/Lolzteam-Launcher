@@ -1,11 +1,8 @@
-import { describe, expect, it } from 'vitest';
 import type { AccountDetails } from '@shared-types';
+import { describe, expect, it } from 'vitest';
 import { extractBrowserLogin } from '../extract';
 
-const baseDetails = (
-  secrets: Record<string, unknown>,
-  categoryRaw = 'tiktok',
-): AccountDetails => ({
+const baseDetails = (secrets: Record<string, unknown>, categoryRaw = 'tiktok'): AccountDetails => ({
   itemId: 1,
   category: 'tiktok',
   categoryRaw,
@@ -54,16 +51,14 @@ describe('extractBrowserLogin', () => {
       }),
     );
     expect(data).not.toBeNull();
-    expect(data!.cookies).toHaveLength(1);
-    expect(data!.landingUrl).toBe('https://www.tiktok.com/@user');
+    expect(data?.cookies).toHaveLength(1);
+    expect(data?.landingUrl).toBe('https://www.tiktok.com/@user');
   });
 
   it('falls back to "<category>_cookies" when cookieKey absent', () => {
-    const data = extractBrowserLogin(
-      baseDetails({ tiktok_cookies: [cookie()] }),
-    );
+    const data = extractBrowserLogin(baseDetails({ tiktok_cookies: [cookie()] }));
     expect(data).not.toBeNull();
-    expect(data!.cookies).toHaveLength(1);
+    expect(data?.cookies).toHaveLength(1);
   });
 
   it('builds a cookie url from the domain (strips leading dot)', () => {
@@ -74,9 +69,7 @@ describe('extractBrowserLogin', () => {
   });
 
   it('uses http scheme for non-secure cookies', () => {
-    const data = extractBrowserLogin(
-      baseDetails({ tiktok_cookies: [cookie({ secure: false })] }),
-    );
+    const data = extractBrowserLogin(baseDetails({ tiktok_cookies: [cookie({ secure: false })] }));
     expect(data?.cookies[0]?.url).toBe('http://tiktok.com/');
   });
 
@@ -116,29 +109,25 @@ describe('extractBrowserLogin', () => {
 
   it('derives a landing url from the cookie domain when accountLink missing', () => {
     const data = extractBrowserLogin(baseDetails({ tiktok_cookies: [cookie()] }));
-    expect(data!.landingUrl).toBe('https://tiktok.com/');
+    expect(data?.landingUrl).toBe('https://tiktok.com/');
   });
 
   it('parses cookies delivered as a JSON string', () => {
-    const data = extractBrowserLogin(
-      baseDetails({ tiktok_cookies: JSON.stringify([cookie()]) }),
-    );
+    const data = extractBrowserLogin(baseDetails({ tiktok_cookies: JSON.stringify([cookie()]) }));
     expect(data).not.toBeNull();
-    expect(data!.cookies).toHaveLength(1);
+    expect(data?.cookies).toHaveLength(1);
   });
 
   it('reads cookies from a generic "cookies" field', () => {
     const data = extractBrowserLogin(baseDetails({ cookies: [cookie()] }));
     expect(data).not.toBeNull();
-    expect(data!.cookies).toHaveLength(1);
+    expect(data?.cookies).toHaveLength(1);
   });
 
   it('reads cookies from a generic "cookies" JSON string', () => {
-    const data = extractBrowserLogin(
-      baseDetails({ cookies: JSON.stringify([cookie()]) }),
-    );
+    const data = extractBrowserLogin(baseDetails({ cookies: JSON.stringify([cookie()]) }));
     expect(data).not.toBeNull();
-    expect(data!.cookies).toHaveLength(1);
+    expect(data?.cookies).toHaveLength(1);
   });
 
   it('scans for any "*_cookies" field when cookieKey and category guess miss', () => {
@@ -146,6 +135,6 @@ describe('extractBrowserLogin', () => {
       baseDetails({ instagram_cookies: [cookie({ domain: '.instagram.com' })] }, 'tiktok'),
     );
     expect(data).not.toBeNull();
-    expect(data!.cookies).toHaveLength(1);
+    expect(data?.cookies).toHaveLength(1);
   });
 });

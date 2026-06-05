@@ -1,4 +1,3 @@
-import { BrowserWindow, session } from 'electron';
 import type {
   AdapterContext,
   LoginMethod,
@@ -7,11 +6,12 @@ import type {
   ServiceAdapter,
 } from '@adapter-contract';
 import type { AccountDetails, ServiceId } from '@shared-types';
+import { BrowserWindow, session } from 'electron';
+import { applyProxyToSession, clearProxyFromSession } from '../../services/proxy';
 import { MAIN_COLORS } from '../../theme';
 import { failLogin as fail } from '../_shared/fail';
-import { applyProxyToSession, clearProxyFromSession } from '../../services/proxy';
-import { extractBrowserLogin, type InjectableCookie } from './extract';
 import { createBrowserShell } from './browser-shell';
+import { type InjectableCookie, extractBrowserLogin } from './extract';
 
 const injectCookies = async (
   partition: string,

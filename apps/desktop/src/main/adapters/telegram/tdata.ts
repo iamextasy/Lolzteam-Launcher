@@ -57,9 +57,7 @@ export const mergeSessions = (
 ): StringSessionData[] => {
   const incomingId = incoming.self?.userId ?? null;
   const kept =
-    incomingId === null
-      ? existing
-      : existing.filter((s) => s.self?.userId !== incomingId);
+    incomingId === null ? existing : existing.filter((s) => s.self?.userId !== incomingId);
   return [incoming, ...kept].slice(0, MAX_ACCOUNTS);
 };
 

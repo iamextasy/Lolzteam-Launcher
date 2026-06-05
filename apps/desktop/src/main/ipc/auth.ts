@@ -1,6 +1,6 @@
-import { ipcMain, BrowserWindow } from 'electron';
 import { IPC_CHANNELS } from '@shared-ipc';
 import type { AuthStatus } from '@shared-types';
+import { BrowserWindow, ipcMain } from 'electron';
 import { clearToken, loadToken, onTokenChange } from '../auth/token-store';
 import { fetchProfileResult } from '../services/market';
 

@@ -27,9 +27,7 @@ export type CheckAccountResult =
   | { ok: true; valid: boolean; tags: AccountTag[]; reason?: string }
   | { ok: false; message: string };
 
-export type ProxyTestResult =
-  | { ok: true; ms: number; ip: string }
-  | { ok: false; message: string };
+export type ProxyTestResult = { ok: true; ms: number; ip: string } | { ok: false; message: string };
 
 export interface ProxyTestInfo {
   ip: string;
@@ -44,9 +42,7 @@ export interface BrowserNavState {
   title: string;
 }
 
-export type NetworkStatus =
-  | { online: true; ms: number }
-  | { online: false; message: string };
+export type NetworkStatus = { online: true; ms: number } | { online: false; message: string };
 
 export type UpdateStatus =
   | { state: 'checking' }
@@ -111,14 +107,14 @@ export const IPC_CHANNELS = {
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 
 export interface IpcRequestMap {
-  [IPC_CHANNELS.AUTH_OPEN_IN_APP]: void;
-  [IPC_CHANNELS.AUTH_OPEN_BROWSER]: void;
-  [IPC_CHANNELS.AUTH_LOGOUT]: void;
-  [IPC_CHANNELS.AUTH_GET_STATUS]: void;
-  [IPC_CHANNELS.ACCOUNTS_LIST]: void;
-  [IPC_CHANNELS.ACCOUNTS_LIST_STREAM]: { only?: ServiceId } | void;
-  [IPC_CHANNELS.ACCOUNTS_REFRESH]: void;
-  [IPC_CHANNELS.ACCOUNTS_CLEAR_CACHE]: void;
+  [IPC_CHANNELS.AUTH_OPEN_IN_APP]: undefined;
+  [IPC_CHANNELS.AUTH_OPEN_BROWSER]: undefined;
+  [IPC_CHANNELS.AUTH_LOGOUT]: undefined;
+  [IPC_CHANNELS.AUTH_GET_STATUS]: undefined;
+  [IPC_CHANNELS.ACCOUNTS_LIST]: undefined;
+  [IPC_CHANNELS.ACCOUNTS_LIST_STREAM]: { only?: ServiceId } | undefined;
+  [IPC_CHANNELS.ACCOUNTS_REFRESH]: undefined;
+  [IPC_CHANNELS.ACCOUNTS_CLEAR_CACHE]: undefined;
   [IPC_CHANNELS.ACCOUNTS_GET]: { itemId: number };
   [IPC_CHANNELS.ACCOUNT_LOGIN]: {
     itemId: number;
@@ -128,70 +124,67 @@ export interface IpcRequestMap {
   };
   [IPC_CHANNELS.ACCOUNT_LOGIN_CANCEL]: { itemId: number };
   [IPC_CHANNELS.ACCOUNT_CHECK]: { itemId: number };
-  [IPC_CHANNELS.SETTINGS_GET]: void;
+  [IPC_CHANNELS.SETTINGS_GET]: undefined;
   [IPC_CHANNELS.SETTINGS_SET]: Partial<LauncherSettings>;
   [IPC_CHANNELS.SETTINGS_PICK_FILE]: PickFileOptions;
-  [IPC_CHANNELS.STEAM_CLEAR_SESSION]: void;
-  [IPC_CHANNELS.PROXY_TEST]: Pick<
-    ProxyEntry,
-    'host' | 'port' | 'username' | 'password'
-  >;
-  [IPC_CHANNELS.BROWSER_NAV_BACK]: void;
-  [IPC_CHANNELS.BROWSER_NAV_FORWARD]: void;
-  [IPC_CHANNELS.BROWSER_NAV_RELOAD]: void;
-  [IPC_CHANNELS.BROWSER_NAV_STOP]: void;
+  [IPC_CHANNELS.STEAM_CLEAR_SESSION]: undefined;
+  [IPC_CHANNELS.PROXY_TEST]: Pick<ProxyEntry, 'host' | 'port' | 'username' | 'password'>;
+  [IPC_CHANNELS.BROWSER_NAV_BACK]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_FORWARD]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_RELOAD]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_STOP]: undefined;
   [IPC_CHANNELS.BROWSER_NAV_GO]: string;
-  [IPC_CHANNELS.BROWSER_NAV_COPY_URL]: void;
-  [IPC_CHANNELS.BROWSER_NAV_OPEN_EXTERNAL]: void;
-  [IPC_CHANNELS.BROWSER_NAV_EXPAND]: void;
-  [IPC_CHANNELS.BROWSER_NAV_COLLAPSE]: void;
-  [IPC_CHANNELS.BROWSER_NAV_PROXY_RETEST]: void;
+  [IPC_CHANNELS.BROWSER_NAV_COPY_URL]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_OPEN_EXTERNAL]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_EXPAND]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_COLLAPSE]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_PROXY_RETEST]: undefined;
   [IPC_CHANNELS.APP_OPEN_EXTERNAL]: { url: string };
-  [IPC_CHANNELS.APP_PING_API]: void;
-  [IPC_CHANNELS.APP_GET_VERSION]: void;
-  [IPC_CHANNELS.APP_OPEN_LOGS]: void;
-  [IPC_CHANNELS.APP_EXPORT_LOG]: void;
-  [IPC_CHANNELS.UPDATE_CHECK]: void;
-  [IPC_CHANNELS.UPDATE_DOWNLOAD]: void;
-  [IPC_CHANNELS.UPDATE_INSTALL]: void;
+  [IPC_CHANNELS.APP_PING_API]: undefined;
+  [IPC_CHANNELS.APP_GET_VERSION]: undefined;
+  [IPC_CHANNELS.APP_OPEN_LOGS]: undefined;
+  [IPC_CHANNELS.APP_EXPORT_LOG]: undefined;
+  [IPC_CHANNELS.UPDATE_CHECK]: undefined;
+  [IPC_CHANNELS.UPDATE_DOWNLOAD]: undefined;
+  [IPC_CHANNELS.UPDATE_INSTALL]: undefined;
 }
 
 export interface IpcResponseMap {
-  [IPC_CHANNELS.AUTH_OPEN_IN_APP]: void;
+  [IPC_CHANNELS.AUTH_OPEN_IN_APP]: undefined;
   [IPC_CHANNELS.AUTH_OPEN_BROWSER]: { state: string };
-  [IPC_CHANNELS.AUTH_LOGOUT]: void;
+  [IPC_CHANNELS.AUTH_LOGOUT]: undefined;
   [IPC_CHANNELS.AUTH_GET_STATUS]: AuthStatus;
   [IPC_CHANNELS.ACCOUNTS_LIST]: AccountSummary[];
-  [IPC_CHANNELS.ACCOUNTS_LIST_STREAM]: void;
+  [IPC_CHANNELS.ACCOUNTS_LIST_STREAM]: undefined;
   [IPC_CHANNELS.ACCOUNTS_REFRESH]: AccountSummary[];
-  [IPC_CHANNELS.ACCOUNTS_CLEAR_CACHE]: void;
+  [IPC_CHANNELS.ACCOUNTS_CLEAR_CACHE]: undefined;
   [IPC_CHANNELS.ACCOUNTS_GET]: AccountDetails;
   [IPC_CHANNELS.ACCOUNT_LOGIN]: { ok: boolean; message?: string };
-  [IPC_CHANNELS.ACCOUNT_LOGIN_CANCEL]: void;
+  [IPC_CHANNELS.ACCOUNT_LOGIN_CANCEL]: undefined;
   [IPC_CHANNELS.ACCOUNT_CHECK]: CheckAccountResult;
   [IPC_CHANNELS.SETTINGS_GET]: SettingsResponse;
   [IPC_CHANNELS.SETTINGS_SET]: SettingsResponse;
   [IPC_CHANNELS.SETTINGS_PICK_FILE]: string | null;
   [IPC_CHANNELS.STEAM_CLEAR_SESSION]: { ok: boolean; message?: string };
   [IPC_CHANNELS.PROXY_TEST]: ProxyTestResult;
-  [IPC_CHANNELS.BROWSER_NAV_BACK]: void;
-  [IPC_CHANNELS.BROWSER_NAV_FORWARD]: void;
-  [IPC_CHANNELS.BROWSER_NAV_RELOAD]: void;
-  [IPC_CHANNELS.BROWSER_NAV_STOP]: void;
-  [IPC_CHANNELS.BROWSER_NAV_GO]: void;
-  [IPC_CHANNELS.BROWSER_NAV_COPY_URL]: void;
-  [IPC_CHANNELS.BROWSER_NAV_OPEN_EXTERNAL]: void;
-  [IPC_CHANNELS.BROWSER_NAV_EXPAND]: void;
-  [IPC_CHANNELS.BROWSER_NAV_COLLAPSE]: void;
+  [IPC_CHANNELS.BROWSER_NAV_BACK]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_FORWARD]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_RELOAD]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_STOP]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_GO]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_COPY_URL]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_OPEN_EXTERNAL]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_EXPAND]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_COLLAPSE]: undefined;
   [IPC_CHANNELS.BROWSER_NAV_PROXY_RETEST]: ProxyTestResult;
-  [IPC_CHANNELS.APP_OPEN_EXTERNAL]: void;
+  [IPC_CHANNELS.APP_OPEN_EXTERNAL]: undefined;
   [IPC_CHANNELS.APP_PING_API]: NetworkStatus;
   [IPC_CHANNELS.APP_GET_VERSION]: string;
-  [IPC_CHANNELS.APP_OPEN_LOGS]: void;
+  [IPC_CHANNELS.APP_OPEN_LOGS]: undefined;
   [IPC_CHANNELS.APP_EXPORT_LOG]: { ok: boolean; path?: string };
-  [IPC_CHANNELS.UPDATE_CHECK]: void;
-  [IPC_CHANNELS.UPDATE_DOWNLOAD]: void;
-  [IPC_CHANNELS.UPDATE_INSTALL]: void;
+  [IPC_CHANNELS.UPDATE_CHECK]: undefined;
+  [IPC_CHANNELS.UPDATE_DOWNLOAD]: undefined;
+  [IPC_CHANNELS.UPDATE_INSTALL]: undefined;
 }
 
 export interface IpcEventMap {

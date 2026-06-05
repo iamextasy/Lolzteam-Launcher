@@ -1,9 +1,9 @@
-import { app } from 'electron';
+import { EventEmitter } from 'node:events';
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
-import { EventEmitter } from 'node:events';
-import log from 'electron-log/main';
 import { DEFAULT_SETTINGS, type LauncherSettings } from '@shared-types';
+import { app } from 'electron';
+import log from 'electron-log/main';
 
 const FILE_NAME = 'settings.json';
 

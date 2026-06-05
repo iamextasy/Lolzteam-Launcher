@@ -1,4 +1,4 @@
-import { access, constants, writeFile } from 'node:fs/promises';
+import { constants, access, writeFile } from 'node:fs/promises';
 import { dirname, join, parse } from 'node:path';
 import { fileExists as sharedFileExists } from '../_shared/fs';
 
@@ -27,7 +27,9 @@ export const getTdataDir = async (telegramExePath: string): Promise<string> => {
   const parent = dirname(telegramExePath);
   const parsed = parse(parent);
   if (parent === parsed.root) {
-    throw new Error('Telegram.exe не должен лежать в корне диска — поместите его в отдельную папку');
+    throw new Error(
+      'Telegram.exe не должен лежать в корне диска — поместите его в отдельную папку',
+    );
   }
   await access(parent, constants.W_OK);
   return join(parent, 'tdata');

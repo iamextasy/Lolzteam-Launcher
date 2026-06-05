@@ -1,5 +1,3 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
-import log from 'electron-log/main';
 import type {
   AdapterContext,
   AdapterLogger,
@@ -8,12 +6,10 @@ import type {
 } from '@adapter-contract';
 import { IPC_CHANNELS } from '@shared-ipc';
 import type { ServiceId } from '@shared-types';
+import { BrowserWindow, app, ipcMain } from 'electron';
+import log from 'electron-log/main';
 import { getAdapter } from '../adapters';
-import {
-  fetchEmailCode,
-  fetchSteamMafile,
-  getAccountDetails,
-} from '../services/market';
+import { fetchEmailCode, fetchSteamMafile, getAccountDetails } from '../services/market';
 import { getSettings } from '../settings/settings-store';
 
 const adapterLogger: AdapterLogger = {
@@ -115,10 +111,7 @@ export const registerLoginIpc = (): void => {
     },
   );
 
-  ipcMain.handle(
-    IPC_CHANNELS.ACCOUNT_LOGIN_CANCEL,
-    (_e, payload: { itemId: number }) => {
-      activeLogins.get(payload.itemId)?.abort();
-    },
-  );
+  ipcMain.handle(IPC_CHANNELS.ACCOUNT_LOGIN_CANCEL, (_e, payload: { itemId: number }) => {
+    activeLogins.get(payload.itemId)?.abort();
+  });
 };

@@ -1,8 +1,4 @@
-import {
-  EAuthSessionGuardType,
-  EAuthTokenPlatformType,
-  LoginSession,
-} from 'steam-session';
+import { EAuthSessionGuardType, EAuthTokenPlatformType, LoginSession } from 'steam-session';
 import { generateSteamGuardCode } from './mafile';
 
 export type SessionError =
@@ -20,9 +16,7 @@ export interface SessionSuccess {
   accountName: string;
 }
 
-export type SessionResult =
-  | { ok: true; data: SessionSuccess }
-  | { ok: false; error: SessionError };
+export type SessionResult = { ok: true; data: SessionSuccess } | { ok: false; error: SessionError };
 
 interface GuardAction {
   type: EAuthSessionGuardType;
@@ -42,12 +36,10 @@ interface LoginParams {
   emailCode?: string;
 }
 
-export const acquireRefreshToken = async (
-  params: LoginParams,
-): Promise<SessionResult> => {
+export const acquireRefreshToken = async (params: LoginParams): Promise<SessionResult> => {
   const session = new LoginSession(EAuthTokenPlatformType.SteamClient);
 
-  let start;
+  let start: Awaited<ReturnType<LoginSession['startWithCredentials']>> | undefined;
   try {
     start = await session.startWithCredentials({
       accountName: params.login,
@@ -74,7 +66,7 @@ export const acquireRefreshToken = async (
           ok: false,
           error: {
             kind: 'unknown',
-            message: 'Steam Guard TOTP отклонён: ' + (err instanceof Error ? err.message : String(err)),
+            message: `Steam Guard TOTP отклонён: ${err instanceof Error ? err.message : String(err)}`,
           },
         };
       }
@@ -89,7 +81,7 @@ export const acquireRefreshToken = async (
           ok: false,
           error: {
             kind: 'unknown',
-            message: 'Email-код отклонён: ' + (err instanceof Error ? err.message : String(err)),
+            message: `Email-код отклонён: ${err instanceof Error ? err.message : String(err)}`,
           },
         };
       }

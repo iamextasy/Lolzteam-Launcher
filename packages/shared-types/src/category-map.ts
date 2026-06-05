@@ -14,7 +14,7 @@ const NAME_TO_SERVICE: Record<string, ServiceId> = {
   'wot-blitz': 'wotblitz',
   wotblitz: 'wotblitz',
   gifts: 'gifts',
-  'epicgames': 'epicgames',
+  epicgames: 'epicgames',
   'epic-games': 'epicgames',
   eft: 'eft',
   'escape-from-tarkov': 'eft',

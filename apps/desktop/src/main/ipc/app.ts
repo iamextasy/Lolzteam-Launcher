@@ -1,7 +1,7 @@
 import { copyFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { IPC_CHANNELS, LOLZ_CONFIG, type NetworkStatus } from '@shared-ipc';
+import { BrowserWindow, app, dialog, ipcMain, shell } from 'electron';
 
 const ALLOWED_URL_PREFIXES = ['https://', 'http://'];
 
@@ -57,9 +57,7 @@ export const registerAppIpc = () => {
       defaultPath: `lolzteam-launcher-${stamp}.log`,
       filters: [{ name: 'Log', extensions: ['log'] }],
     };
-    const result = win
-      ? await dialog.showSaveDialog(win, opts)
-      : await dialog.showSaveDialog(opts);
+    const result = win ? await dialog.showSaveDialog(win, opts) : await dialog.showSaveDialog(opts);
     if (result.canceled || !result.filePath) return { ok: false };
     await copyFile(logFile(), result.filePath);
     return { ok: true, path: result.filePath };

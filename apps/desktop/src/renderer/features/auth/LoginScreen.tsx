@@ -1,17 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { ExternalLink, Languages, Check, Wifi, WifiOff, Loader2 } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 import type { LocalePreference } from '@shared-types';
-import logoUrl from '~/assets/logolzt.svg';
+import { Check, ExternalLink, Languages, Loader2, Wifi, WifiOff } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import backgroundUrl from '~/assets/background.svg';
+import logoUrl from '~/assets/logolzt.svg';
 import s from './LoginScreen.module.scss';
 
 const LOCALE_OPTIONS: readonly LocalePreference[] = ['ru', 'en'] as const;
 
-type NetState =
-  | { kind: 'checking' }
-  | { kind: 'online'; ms: number }
-  | { kind: 'offline' };
+type NetState = { kind: 'checking' } | { kind: 'online'; ms: number } | { kind: 'offline' };
 
 export const LoginScreen = () => {
   const { t } = useTranslation();
@@ -71,7 +68,7 @@ export const LoginScreen = () => {
           style={{ '--login-bg': `url(${backgroundUrl})` } as React.CSSProperties}
         />
 
-        <div
+        <output
           className={`${s.netStatus} ${
             net.kind === 'online'
               ? s.netOnline
@@ -79,7 +76,6 @@ export const LoginScreen = () => {
                 ? s.netOffline
                 : s.netChecking
           }`}
-          role="status"
         >
           {net.kind === 'checking' && (
             <>
@@ -102,7 +98,7 @@ export const LoginScreen = () => {
               </button>
             </>
           )}
-        </div>
+        </output>
 
         <div className={s.loginBlock}>
           <img className={s.logo} src={logoUrl} alt="Lolzteam" />
@@ -118,9 +114,7 @@ export const LoginScreen = () => {
               disabled={busy !== null || net.kind !== 'online'}
             >
               <ExternalLink size={16} />
-              <span>
-                {busy === 'browser' ? t('login.busyBrowser') : t('login.openBrowser')}
-              </span>
+              <span>{busy === 'browser' ? t('login.busyBrowser') : t('login.openBrowser')}</span>
             </button>
             <div className={s.langWrap} ref={langRef}>
               <button

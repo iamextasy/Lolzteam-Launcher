@@ -1,10 +1,10 @@
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { BrowserWindow, WebContentsView, clipboard, ipcMain, shell } from 'electron';
+import type { AdapterLogger } from '@adapter-contract';
 import type { BrowserNavState, ProxyTestResult } from '@shared-ipc';
 import { IPC_CHANNELS } from '@shared-ipc';
-import type { AdapterLogger } from '@adapter-contract';
 import type { ProxyEntry } from '@shared-types';
+import { type BrowserWindow, WebContentsView, clipboard, ipcMain, shell } from 'electron';
 import { testProxy } from '../../services/proxy';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
@@ -37,9 +37,7 @@ const wireHandlers = (): void => {
   ipcMain.handle(IPC_CHANNELS.BROWSER_NAV_STOP, (e) => get(e.sender.id)?.stop());
   ipcMain.handle(IPC_CHANNELS.BROWSER_NAV_GO, (e, url: string) => get(e.sender.id)?.go(url));
   ipcMain.handle(IPC_CHANNELS.BROWSER_NAV_COPY_URL, (e) => get(e.sender.id)?.copyUrl());
-  ipcMain.handle(IPC_CHANNELS.BROWSER_NAV_OPEN_EXTERNAL, (e) =>
-    get(e.sender.id)?.openExternal(),
-  );
+  ipcMain.handle(IPC_CHANNELS.BROWSER_NAV_OPEN_EXTERNAL, (e) => get(e.sender.id)?.openExternal());
   ipcMain.handle(IPC_CHANNELS.BROWSER_NAV_EXPAND, (e) => get(e.sender.id)?.expand());
   ipcMain.handle(IPC_CHANNELS.BROWSER_NAV_COLLAPSE, (e) => get(e.sender.id)?.collapse());
   ipcMain.handle(IPC_CHANNELS.BROWSER_NAV_PROXY_RETEST, (e) => {
@@ -66,10 +64,7 @@ const normalizeAddress = (raw: string): string | null => {
   return `https://www.google.com/search?q=${encodeURIComponent(value)}`;
 };
 
-const buildProxyQuery = (
-  proxy: ProxyEntry,
-  proxyTest?: { ip: string; ms: number },
-): string => {
+const buildProxyQuery = (proxy: ProxyEntry, proxyTest?: { ip: string; ms: number }): string => {
   const params = new URLSearchParams({
     proxy: '1',
     label: proxy.label ?? '',
@@ -94,7 +89,12 @@ const loadToolbar = (view: WebContentsView, query: string): void => {
 
 export const createBrowserShell = (
   win: BrowserWindow,
-  opts: { partition: string; log: AdapterLogger; proxy?: ProxyEntry; proxyTest?: { ip: string; ms: number } },
+  opts: {
+    partition: string;
+    log: AdapterLogger;
+    proxy?: ProxyEntry;
+    proxyTest?: { ip: string; ms: number };
+  },
 ): { siteView: WebContentsView } => {
   wireHandlers();
 
@@ -127,9 +127,7 @@ export const createBrowserShell = (
   const layout = (): void => {
     const { width, height } = win.getContentBounds();
     toolbarView.setBounds(
-      expanded
-        ? { x: 0, y: 0, width, height }
-        : { x: 0, y: 0, width, height: TOOLBAR_H },
+      expanded ? { x: 0, y: 0, width, height } : { x: 0, y: 0, width, height: TOOLBAR_H },
     );
     siteView.setBounds({ x: 0, y: TOOLBAR_H, width, height: Math.max(0, height - TOOLBAR_H) });
   };

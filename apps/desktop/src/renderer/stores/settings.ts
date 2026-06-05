@@ -1,5 +1,5 @@
-import { create } from 'zustand';
 import type { LauncherSettings } from '@shared-types';
+import { create } from 'zustand';
 
 interface SettingsState {
   settings: LauncherSettings | null;

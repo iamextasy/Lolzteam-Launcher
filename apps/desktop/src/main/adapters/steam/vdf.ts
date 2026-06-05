@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs';
 import { dirname } from 'node:path';
-import { getObj, parseVdf, writeVdfString, type VdfObject } from './vdf-parse';
+import { type VdfObject, getObj, parseVdf, writeVdfString } from './vdf-parse';
 
 const writeFile = async (path: string, content: string): Promise<void> => {
   await fs.mkdir(dirname(path), { recursive: true });
@@ -21,15 +21,9 @@ const readExisting = async (path: string): Promise<VdfObject | null> => {
 // and set the persona state; otherwise we keep friends sign-in off as before.
 const PERSONA_INVISIBLE = '7';
 
-export const writeLocalConfigVdf = async (
-  path: string,
-  invisible = false,
-): Promise<void> => {
+export const writeLocalConfigVdf = async (path: string, invisible = false): Promise<void> => {
   const friendsLines = invisible
-    ? [
-        '\t\t"SignIntoFriends"\t\t"1"',
-        `\t\t"ePersonaState"\t\t"${PERSONA_INVISIBLE}"`,
-      ]
+    ? ['\t\t"SignIntoFriends"\t\t"1"', `\t\t"ePersonaState"\t\t"${PERSONA_INVISIBLE}"`]
     : ['\t\t"SignIntoFriends"\t\t"0"'];
   await writeFile(
     path,
