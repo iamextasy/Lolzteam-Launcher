@@ -17,6 +17,7 @@
     "ky": "^1.7.4"
   },
   "devDependencies": {
+    "@types/node": "^22.10.2",
     "typescript": "^5.7.2"
   }
 }

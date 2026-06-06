@@ -3,7 +3,7 @@ import type { StringSessionData } from '@mtcute/node/utils.js';
 import { describe, expect, it } from 'vitest';
 import { mergeSessions } from '../tdata';
 
-const DC2 = DC_MAPPING_PROD[2] ?? 0;
+const DC2 = DC_MAPPING_PROD[2] as StringSessionData['primaryDcs'];
 
 const session = (userId: number | null): StringSessionData => ({
   version: 3,

@@ -10,12 +10,14 @@ export const generateSteamGuardCode = (sharedSecretBase64: string, now = Date.no
   buf.writeBigUInt64BE(time);
 
   const hmac = createHmac('sha1', key).update(buf).digest();
-  const offset = hmac[hmac.length - 1] & 0x0f;
-  let code =
-    ((hmac[offset] & 0x7f) << 24) |
-    ((hmac[offset + 1] & 0xff) << 16) |
-    ((hmac[offset + 2] & 0xff) << 8) |
-    (hmac[offset + 3] & 0xff);
+  const last = hmac[hmac.length - 1] ?? 0;
+  const offset = last & 0x0f;
+  if (offset + 3 >= hmac.length) throw new Error('Invalid HMAC output length');
+  const a = hmac.readUInt8(offset) & 0x7f;
+  const b = hmac.readUInt8(offset + 1) & 0xff;
+  const c = hmac.readUInt8(offset + 2) & 0xff;
+  const d = hmac.readUInt8(offset + 3) & 0xff;
+  let code = (a << 24) | (b << 16) | (c << 8) | d;
 
   let out = '';
   for (let i = 0; i < 5; i++) {

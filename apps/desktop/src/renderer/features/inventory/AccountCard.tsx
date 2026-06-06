@@ -514,7 +514,7 @@ const AccountCardImpl = ({ item }: AccountCardProps) => {
         {aboutParts.length > 0 && (
           <div className={s.aboutBlock}>
             {aboutParts.map((part) => (
-              <Fragment key={part}>
+              <Fragment key={String(part)}>
                 {part !== aboutParts[0] && <span className={s.dot} />}
                 {part}
               </Fragment>

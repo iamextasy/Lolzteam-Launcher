@@ -15,8 +15,10 @@ const CRC32_TABLE = (() => {
 const crc32 = (buf: Buffer): number => {
   let crc = 0xffffffff;
   for (let i = 0; i < buf.length; i++) {
-    const byte = buf[i];
-    crc = (crc >>> 8) ^ CRC32_TABLE[(crc ^ byte) & 0xff];
+    const byte = buf.readUInt8(i);
+    const index = (crc ^ byte) & 0xff;
+    const tableValue = CRC32_TABLE[index] ?? 0;
+    crc = (crc >>> 8) ^ tableValue;
   }
   return (crc ^ 0xffffffff) >>> 0;
 };
@@ -57,10 +59,17 @@ export const dpapiProtect = (data: Buffer, entropy: Buffer): Promise<string> =>
     let stdout = '';
     let stderr = '';
 
-    child.stdout.on('data', (chunk: Buffer) => {
+    const childStdout = child.stdout;
+    const childStderr = child.stderr;
+    if (!childStdout || !childStderr) {
+      reject(new Error('DPAPI helper child process streams are unavailable'));
+      return;
+    }
+
+    childStdout.on('data', (chunk: Buffer) => {
       stdout += chunk.toString('utf8');
     });
-    child.stderr.on('data', (chunk: Buffer) => {
+    childStderr.on('data', (chunk: Buffer) => {
       stderr += chunk.toString('utf8');
     });
 
