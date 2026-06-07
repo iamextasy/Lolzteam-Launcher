@@ -31,7 +31,7 @@ npm install -g pnpm
 или включите Corepack (если он доступен):
 
 ```bash
-corepack enable pnpm
+npx corepack enable pnpm
 ```
 
 ```bash
