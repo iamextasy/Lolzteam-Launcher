@@ -33,6 +33,11 @@ export interface ProxyEntry {
 
 export interface LauncherSettings {
   telegramExePath: string | null;
+  /**
+   * Lift the 3-account cap when writing tdata. Only safe with forks (AyuGram
+   * etc.) that support more than 3 simultaneous accounts; the user opts in.
+   */
+  telegramUnlimitedAccounts: boolean;
   locale: LocalePreference;
   /** Sign into Steam with an invisible online status. */
   steamInvisible: boolean;
@@ -49,6 +54,7 @@ export type InventorySortDir = 'asc' | 'desc';
 
 export const DEFAULT_SETTINGS: LauncherSettings = {
   telegramExePath: null,
+  telegramUnlimitedAccounts: false,
   locale: 'ru',
   steamInvisible: false,
   proxyEnabled: false,

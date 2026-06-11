@@ -93,6 +93,13 @@ export const SettingsView = () => {
     setSettings(next.settings);
   };
 
+  const toggleTelegramUnlimited = async () => {
+    const next = await window.launcher.settings.set({
+      telegramUnlimitedAccounts: !(settings?.telegramUnlimitedAccounts ?? false),
+    });
+    setSettings(next.settings);
+  };
+
   const clearCache = async () => {
     if (clearingCache) return;
     setClearingCache(true);
@@ -144,6 +151,7 @@ export const SettingsView = () => {
   const openExternal = (url: string) => () => void window.launcher.app.openExternal(url);
 
   const tgPath = settings?.telegramExePath ?? null;
+  const telegramUnlimited = settings?.telegramUnlimitedAccounts ?? false;
   const currentLocale: LocalePreference = settings?.locale ?? 'ru';
   const steamInvisible = settings?.steamInvisible ?? false;
 
@@ -287,6 +295,25 @@ export const SettingsView = () => {
                   fill="currentColor"
                 />
               </svg>
+            </div>
+            <div className={`${s.settingsMenu} ${s.settingsMenuWrap}`}>
+              <div className={s.text}>
+                <span className={s.title}>{t('settings.telegram.unlimitedLabel')}</span>
+                <div className={s.descriptionBlock}>
+                  <span className={s.description}>{t('settings.telegram.unlimitedHint')}</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={telegramUnlimited}
+                className={s.toggleRow}
+                onClick={toggleTelegramUnlimited}
+              >
+                <span className={`${s.switch} ${telegramUnlimited ? s.switchOn : ''}`}>
+                  <span className={s.switchKnob} />
+                </span>
+              </button>
             </div>
           </div>
           <div className={s.settingsItem}>

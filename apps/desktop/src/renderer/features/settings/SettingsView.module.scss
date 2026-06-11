@@ -99,6 +99,16 @@
           opacity: .72;
         }
       }
+
+      .settingsMenuWrap {
+        .text,
+        .descriptionBlock,
+        .description {
+          white-space: normal;
+          overflow: visible;
+          text-overflow: clip;
+        }
+      }
     }
 
     .socialBlock {
@@ -145,6 +155,7 @@
       justify-content: space-between;
       gap: $space-4;
       text-align: left;
+      flex-shrink: 0;
 
       &:focus-visible {
         @include focus-ring;

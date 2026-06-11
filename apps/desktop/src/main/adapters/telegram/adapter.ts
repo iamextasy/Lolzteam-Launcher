@@ -15,7 +15,7 @@ import { ensurePortableMarker, fileExists, getTdataDir } from './paths';
 import { killTelegramProcesses, waitForTelegramExit } from './process';
 import { buildOfflineSession } from './session';
 import { writeProxySettings } from './settings-tdf';
-import { mergeSessions, readExistingSessions, toSessionData, writeTdata } from './tdata';
+import { MAX_ACCOUNTS, mergeSessions, readExistingSessions, toSessionData, writeTdata } from './tdata';
 
 export const telegramAdapter: ServiceAdapter = {
   id: 'telegram',
@@ -115,8 +115,16 @@ export const telegramAdapter: ServiceAdapter = {
     // tdata can't be read (passcode/corruption/version), matching old behaviour.
     const incoming = toSessionData(session);
     const existing = await readExistingSessions(tdataDir, ctx.log);
-    const merged = mergeSessions(incoming, existing);
-    ctx.log.info(`[telegram] writing tdata to ${tdataDir}: ${merged.length} account(s) (offline)`);
+    const unlimited = ctx.settings?.telegramUnlimitedAccounts ?? false;
+    const merged = mergeSessions(
+      incoming,
+      existing,
+      unlimited ? Number.POSITIVE_INFINITY : undefined,
+    );
+    ctx.log.info(
+      `[telegram] writing tdata to ${tdataDir}: ${merged.length} account(s) ` +
+        `(offline, cap=${unlimited ? 'unlimited' : MAX_ACCOUNTS})`,
+    );
     try {
       await rm(stagingDir, { recursive: true, force: true });
       await writeTdata(merged, stagingDir);

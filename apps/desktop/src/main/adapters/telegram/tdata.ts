@@ -6,8 +6,9 @@ export type TdataSession = string | StringSessionData;
 
 // Telegram Desktop (free tier) shows at most 3 accounts; extra entries written
 // into tdata are simply ignored by the client. Cap to the same number so the
-// oldest account is evicted instead of silently dropped by TDesktop.
-const MAX_ACCOUNTS = 3;
+// oldest account is evicted instead of silently dropped by TDesktop. Forks
+// (AyuGram etc.) raise this limit, so the cap is overridable per-call.
+export const MAX_ACCOUNTS = 3;
 
 // A session string carries the same data as StringSessionData; normalize so we
 // can inspect `self.userId` for dedup before writing.
@@ -54,11 +55,12 @@ export const readExistingSessions = async (
 export const mergeSessions = (
   incoming: StringSessionData,
   existing: StringSessionData[],
+  maxAccounts: number = MAX_ACCOUNTS,
 ): StringSessionData[] => {
   const incomingId = incoming.self?.userId ?? null;
   const kept =
     incomingId === null ? existing : existing.filter((s) => s.self?.userId !== incomingId);
-  return [incoming, ...kept].slice(0, MAX_ACCOUNTS);
+  return [incoming, ...kept].slice(0, maxAccounts);
 };
 
 // Accepts either a single session (string or StringSessionData) or an array.

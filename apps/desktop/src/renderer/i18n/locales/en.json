@@ -231,7 +231,9 @@
       "alert": "A separate client is recommended — a portable build or fork, not your main Telegram.",
       "clear": "Reset",
       "releaseLabel": "Latest Telegram Desktop release",
-      "releaseHint": "Open the GitHub release page — portable builds and installers"
+      "releaseHint": "Open the GitHub release page — portable builds and installers",
+      "unlimitedLabel": "Remove the 3-account limit",
+      "unlimitedHint": "By default at most 3 accounts are written to tdata. Enable only if your client (AyuGram and other forks) supports more — otherwise extra accounts won't show up."
     },
     "language": {
       "title": "Language",

@@ -30,6 +30,15 @@ describe('mergeSessions', () => {
     expect(ids(merged)).toEqual([4, 1, 2]);
   });
 
+  it('keeps every account when the cap is lifted', () => {
+    const merged = mergeSessions(
+      session(5),
+      [session(1), session(2), session(3), session(4)],
+      Number.POSITIVE_INFINITY,
+    );
+    expect(ids(merged)).toEqual([5, 1, 2, 3, 4]);
+  });
+
   it('does not dedup an incoming session without `self` (offline auth_key)', () => {
     const merged = mergeSessions(session(null), [session(1), session(2)]);
     expect(ids(merged)).toEqual([null, 1, 2]);
