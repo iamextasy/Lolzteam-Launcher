@@ -54,6 +54,9 @@ export interface RawMarketItem {
   steam_id?: string;
   steam_level?: number | string;
   steam_balance?: number | string | null;
+  steam_converted_balance?: number | string | null;
+  steam_converted_pending_balance?: number | string | null;
+  steam_points?: number | string | null;
   steam_mfa?: RawMarketBooleanLike;
   steam_is_limited?: RawMarketBooleanLike;
   steam_last_activity?: number | string;

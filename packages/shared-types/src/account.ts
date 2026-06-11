@@ -64,6 +64,12 @@ export interface SteamInfo {
   tradeBanned: boolean;
   /** Human-readable balance as the API renders it (e.g. "0₴"). */
   balance: string | null;
+  /** Balance converted to the viewer's account currency (matches item currency). */
+  convertedBalance: number | null;
+  /** Pending balance converted to the viewer's account currency. */
+  convertedPendingBalance: number | null;
+  /** Steam points balance. */
+  points: number | null;
   /** Origin phrase, e.g. "Авторег". */
   origin: string | null;
   /** ISO 3166 alpha-2 country code, e.g. "US". */

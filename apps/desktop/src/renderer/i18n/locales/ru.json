@@ -164,6 +164,7 @@
         "games_few": "{{count}} игры",
         "games_many": "{{count}} игр",
         "games_other": "{{count}} игр",
+        "points": "{{value}} очков",
         "lastSeenToday": "Сегодня в сети",
         "lastSeenDays_one": "{{count}} день назад",
         "lastSeenDays_few": "{{count}} дня назад",

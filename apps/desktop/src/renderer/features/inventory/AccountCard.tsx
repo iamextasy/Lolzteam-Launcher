@@ -14,6 +14,7 @@ import {
   Check,
   CheckCircle2,
   Clock,
+  Coins,
   ExternalLink,
   Globe,
   KeyRound,
@@ -24,6 +25,7 @@ import {
   Star,
   Tag,
   Tags,
+  Wallet,
 } from 'lucide-react';
 import { Fragment, type ReactNode, memo, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -148,7 +150,7 @@ const toLoginService = (category: AccountSummary['category']): LoginService | nu
 const loginMethodFor = (service: LoginService): 'native' | 'web' =>
   service === 'browser' || service === 'discord' ? 'web' : 'native';
 
-const SteamDetails = ({ steam }: { steam: SteamInfo }) => {
+const SteamDetails = ({ steam, currency }: { steam: SteamInfo; currency: string }) => {
   const { t, i18n } = useTranslation();
   const banned = steam.vacBanned || steam.communityBanned || steam.tradeBanned;
 
@@ -198,6 +200,20 @@ const SteamDetails = ({ steam }: { steam: SteamInfo }) => {
           <span className={s.badge}>
             <Tag size={12} />
             {steam.origin}
+          </span>
+        )}
+        {typeof steam.convertedBalance === 'number' && steam.convertedBalance > 0 && (
+          <span className={`${s.badge} ${s.badgeOk}`}>
+            <Wallet size={12} />
+            {formatPrice(steam.convertedBalance, currency, i18n.language)}
+          </span>
+        )}
+        {typeof steam.points === 'number' && steam.points > 0 && (
+          <span className={s.badge}>
+            <Coins size={12} />
+            {t('inventory.card.steam.points', {
+              value: steam.points.toLocaleString(i18n.language === 'ru' ? 'ru-RU' : 'en-US'),
+            })}
           </span>
         )}
         {typeof steam.gameCount === 'number' && steam.gameCount > 0 && (
@@ -577,7 +593,7 @@ const AccountCardImpl = ({ item }: AccountCardProps) => {
         )}
 
         <div className={s.parsedInfo}>
-          {item.steam && <SteamDetails steam={item.steam} />}
+          {item.steam && <SteamDetails steam={item.steam} currency={item.currency} />}
           {item.telegram && <TelegramDetails tg={item.telegram} />}
         </div>
 
