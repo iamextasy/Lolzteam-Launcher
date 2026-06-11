@@ -154,6 +154,7 @@
         "hoursShort": "h",
         "games_one": "{{count}} game",
         "games_other": "{{count}} games",
+        "points": "{{value}} points",
         "lastSeenToday": "Online today",
         "lastSeenDays_one": "{{count}} day ago",
         "lastSeenDays_other": "{{count}} days ago"
