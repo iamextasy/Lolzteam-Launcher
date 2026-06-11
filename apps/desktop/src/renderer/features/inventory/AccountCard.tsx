@@ -1,6 +1,7 @@
 import type {
   AccountSummary,
   AccountTag,
+  AuthStatus,
   ProxyEntry,
   ServiceId,
   SteamInfo,
@@ -24,6 +25,7 @@ import {
   Star,
   Tag,
   Tags,
+  Wallet,
 } from 'lucide-react';
 import { Fragment, type ReactNode, memo, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -386,6 +388,16 @@ const AccountCardImpl = ({ item }: AccountCardProps) => {
     void window.launcher.app.openExternal(`https://lzt.market/${item.itemId}/`);
   };
 
+  const openSteamValue = () => {
+    setMenuOpen(false);
+    const currency = (
+      qc.getQueryData<AuthStatus>(['auth-status'])?.session?.currency ?? 'rub'
+    ).toLowerCase();
+    void window.launcher.app.openExternal(
+      `https://lzt.market/steam-value/?currency=${currency}&link=https://lzt.market/${item.itemId}/`,
+    );
+  };
+
   const applyTags = (tags: AccountTag[]) => updateItemTags(() => tags);
 
   const updateItemTags = (transform: (tags: AccountTag[]) => AccountTag[]) => {
@@ -708,6 +720,17 @@ const AccountCardImpl = ({ item }: AccountCardProps) => {
                   <Tags size={16} />
                   <span>{t('inventory.card.labelsMenu')}</span>
                 </button>
+                {service === 'steam' && (
+                  <button
+                    type="button"
+                    className={s.menuItem}
+                    role="menuitem"
+                    onClick={openSteamValue}
+                  >
+                    <Wallet size={16} />
+                    <span>{t('inventory.card.steamInventoryValue')}</span>
+                  </button>
+                )}
                 <button type="button" className={s.menuItem} role="menuitem" onClick={openOnMarket}>
                   <ExternalLink size={16} />
                   <span>{t('inventory.card.openOnMarket')}</span>
