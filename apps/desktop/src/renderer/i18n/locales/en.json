@@ -107,7 +107,7 @@
     "emptyUnsupported": "Your inventory has no accounts for supported services (Steam, Telegram).",
     "openMarket": "Open lzt.market",
     "refresh": "Refresh",
-    "searchPlaceholder": "Search by name, game, country…",
+    "searchPlaceholder": "Search by name, game, country, id…",
     "searchClear": "Clear search",
     "noResults": "No accounts match your search.",
     "sort": {

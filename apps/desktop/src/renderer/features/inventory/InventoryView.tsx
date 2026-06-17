@@ -71,6 +71,7 @@ const searchHaystack = (item: AccountSummary): string => {
     item.telegram?.country,
     item.telegram?.username,
     item.telegram?.phone,
+    item.telegram?.id?.toString(),
     ...(item.steam?.games.map((g) => g.title) ?? []),
   ];
   return parts.filter(Boolean).join(' ').toLowerCase();

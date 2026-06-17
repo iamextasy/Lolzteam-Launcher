@@ -107,7 +107,7 @@
     "emptyUnsupported": "В вашем инвентаре нет аккаунтов поддерживаемых сервисов (Steam, Telegram).",
     "openMarket": "Открыть lzt.market",
     "refresh": "Обновить",
-    "searchPlaceholder": "Поиск по названию, игре, стране…",
+    "searchPlaceholder": "Поиск по названию, игре, стране, id…",
     "searchClear": "Очистить поиск",
     "noResults": "Ничего не найдено по запросу.",
     "sort": {
