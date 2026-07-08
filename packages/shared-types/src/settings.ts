@@ -38,6 +38,8 @@ export interface LauncherSettings {
   locale: LocalePreference;
   /** Sign into Steam with an invisible online status. */
   steamInvisible: boolean;
+  steamAutoLaunchGame: boolean;
+  steamAutoLaunchAppId: string;
   proxyEnabled: boolean;
   proxies: ProxyEntry[];
   proxyServices: ServiceId[];
@@ -66,6 +68,8 @@ export const DEFAULT_SETTINGS: LauncherSettings = {
   telegramMaxAccounts: 3,
   locale: 'ru',
   steamInvisible: false,
+  steamAutoLaunchGame: false,
+  steamAutoLaunchAppId: '',
   proxyEnabled: false,
   proxies: [],
   proxyServices: [...PROXY_CAPABLE_SERVICES],

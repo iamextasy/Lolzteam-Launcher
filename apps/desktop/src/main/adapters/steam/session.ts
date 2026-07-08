@@ -66,7 +66,7 @@ const runCredentialLogin = async (
   params: LoginParams,
   platform: EAuthTokenPlatformType,
 ): Promise<{ result: SessionResult; session: LoginSession }> => {
-  const session = new LoginSession(platform);
+  const session = new LoginSession(platform, { machineId: true });
   const failWith = (error: SessionError): { result: SessionResult; session: LoginSession } => ({
     result: { ok: false, error },
     session,

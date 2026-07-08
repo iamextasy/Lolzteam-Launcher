@@ -9,6 +9,22 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '0.7.1',
+    date: '2026-07-08',
+    changes: {
+      ru: [
+        'Добавлена настройка «Автозапуск игры при входе» в Steam: указываете App ID игры (например, 730 = CS2), и после входа в аккаунт Steam сразу запустит игру',
+        'При нативном входе в Steam теперь отправляется стабильный machine_id (детерминированный от логина аккаунта), вход выглядит как настоящий Steam-клиент',
+        'Исправлены работа тултипов',
+      ],
+      en: [
+        'Added an "Auto-launch game on login" Steam setting: enter a game App ID (e.g. 730 = CS2), and after signing into a Steam account the game launches right away',
+        'Native Steam sign-in now sends a stable machine_id (deterministic, seeded from the account login) — the sign-in looks like a real Steam client',
+        'Fixed tooltip behavior',
+      ],
+    },
+  },
+  {
     version: '0.7.0',
     date: '2026-07-01',
     changes: {

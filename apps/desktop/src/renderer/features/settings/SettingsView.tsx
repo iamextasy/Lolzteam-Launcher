@@ -123,6 +123,19 @@ export const SettingsView = () => {
     setSettings(next.settings);
   };
 
+  const toggleSteamAutoLaunch = async () => {
+    const next = await window.launcher.settings.set({
+      steamAutoLaunchGame: !(settings?.steamAutoLaunchGame ?? false),
+    });
+    setSettings(next.settings);
+  };
+
+  const setSteamAutoLaunchAppId = async (raw: string) => {
+    const appId = raw.replace(/\D/g, '').slice(0, 8);
+    const next = await window.launcher.settings.set({ steamAutoLaunchAppId: appId });
+    setSettings(next.settings);
+  };
+
   const toggleRefreshOnLaunch = async () => {
     const next = await window.launcher.settings.set({
       refreshOnLaunch: !(settings?.refreshOnLaunch ?? true),
@@ -201,6 +214,8 @@ export const SettingsView = () => {
   const telegramMaxAccounts = settings?.telegramMaxAccounts ?? 3;
   const currentLocale: LocalePreference = settings?.locale ?? 'ru';
   const steamInvisible = settings?.steamInvisible ?? false;
+  const steamAutoLaunch = settings?.steamAutoLaunchGame ?? false;
+  const steamAutoLaunchAppId = settings?.steamAutoLaunchAppId ?? '';
 
   const cacheDescription = clearingCache
     ? t('settings.cache.clearing')
@@ -391,6 +406,43 @@ export const SettingsView = () => {
                 </span>
               </button>
             </div>
+            <div className={s.settingsMenu}>
+              <div className={s.text}>
+                <span className={s.title}>{t('settings.steam.autoLaunchLabel')}</span>
+                <div className={s.descriptionBlock}>
+                  <span className={s.description}>{t('settings.steam.autoLaunchHint')}</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={steamAutoLaunch}
+                className={s.toggleRow}
+                onClick={toggleSteamAutoLaunch}
+              >
+                <span className={`${s.switch} ${steamAutoLaunch ? s.switchOn : ''}`}>
+                  <span className={s.switchKnob} />
+                </span>
+              </button>
+            </div>
+            {steamAutoLaunch && (
+              <div className={s.settingsMenu}>
+                <div className={s.text}>
+                  <span className={s.title}>{t('settings.steam.autoLaunchAppIdLabel')}</span>
+                  <div className={s.descriptionBlock}>
+                    <span className={s.description}>{t('settings.steam.autoLaunchAppIdHint')}</span>
+                  </div>
+                </div>
+                <input
+                  className={s.appIdInput}
+                  value={steamAutoLaunchAppId}
+                  onChange={(e) => void setSteamAutoLaunchAppId(e.target.value)}
+                  inputMode="numeric"
+                  spellCheck={false}
+                  placeholder={t('settings.steam.autoLaunchAppIdPlaceholder')}
+                />
+              </div>
+            )}
             <div
               className={s.settingsMenu}
               role="button"

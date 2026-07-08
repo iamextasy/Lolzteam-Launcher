@@ -222,9 +222,15 @@ const loginNative = async (account: AccountDetails, ctx: AdapterContext): Promis
     ctx.log.warn('[steam] failed to update registry', err);
   }
 
+  const autoAppId =
+    ctx.settings?.steamAutoLaunchGame && /^\d+$/.test(ctx.settings.steamAutoLaunchAppId ?? '')
+      ? ctx.settings.steamAutoLaunchAppId
+      : null;
+  const launchTarget = autoAppId ? `steam://rungameid/${autoAppId}` : 'steam://0';
+
   ctx.onProgress?.({ step: 'launching-steam' });
-  ctx.log.info('[steam] launching via steam://0');
-  const child = spawn('cmd', ['/c', 'start', '', 'steam://0'], {
+  ctx.log.info(`[steam] launching via ${launchTarget}`);
+  const child = spawn('cmd', ['/c', 'start', '', launchTarget], {
     detached: true,
     stdio: 'ignore',
     windowsHide: true,

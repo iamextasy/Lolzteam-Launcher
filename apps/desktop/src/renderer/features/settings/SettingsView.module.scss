@@ -197,6 +197,28 @@
   border: 1px solid $color-border;
 }
 
+.appIdInput {
+  flex-shrink: 0;
+  width: 96px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #161616;
+  border: 1px solid $color-border;
+  color: $color-text;
+  font-size: 14px;
+  text-align: center;
+  outline: none;
+  transition: border-color $duration-fast $ease-out;
+
+  &:focus {
+    border-color: $color-accent;
+  }
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+}
+
 .segmentBtn {
   @include button-reset;
   @include clickable;

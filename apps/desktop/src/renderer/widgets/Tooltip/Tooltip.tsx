@@ -42,6 +42,7 @@ export const Tooltip = ({
   const anchorRef = useRef<HTMLElement | null>(null);
   const bubbleRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pointerFocusRef = useRef(false);
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<Pos | null>(null);
 
@@ -91,6 +92,7 @@ export const Tooltip = ({
     ref?: React.Ref<HTMLElement>;
     onMouseEnter?: (e: React.MouseEvent) => void;
     onMouseLeave?: (e: React.MouseEvent) => void;
+    onPointerDown?: (e: React.PointerEvent) => void;
     onFocus?: (e: React.FocusEvent) => void;
     onBlur?: (e: React.FocusEvent) => void;
     'aria-describedby'?: string;
@@ -117,12 +119,22 @@ export const Tooltip = ({
       child.props.onMouseLeave?.(e);
       hide();
     },
+    onPointerDown: (e: React.PointerEvent) => {
+      child.props.onPointerDown?.(e);
+      pointerFocusRef.current = true;
+      hide();
+    },
     onFocus: (e: React.FocusEvent) => {
       child.props.onFocus?.(e);
+      if (pointerFocusRef.current) {
+        pointerFocusRef.current = false;
+        return;
+      }
       show();
     },
     onBlur: (e: React.FocusEvent) => {
       child.props.onBlur?.(e);
+      pointerFocusRef.current = false;
       hide();
     },
     'aria-describedby': open ? id : undefined,
