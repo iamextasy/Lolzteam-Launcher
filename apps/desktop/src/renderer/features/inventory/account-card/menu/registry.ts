@@ -4,6 +4,7 @@ import { labelsAction } from './actions/labels';
 import { loginViaBrowserAction } from './actions/loginViaBrowser';
 import { openEmailAction } from './actions/openEmail';
 import { openMarketAction } from './actions/openMarket';
+import { transferGiftsAction } from './actions/transferGifts';
 import type { AccountAction } from './types';
 
 /** Offered for every account, below the service-specific entries. */
@@ -20,7 +21,7 @@ const SHARED_ACTIONS: AccountAction[] = [
  * the card has to change.
  */
 const SERVICE_ACTIONS: Partial<Record<LoginService, AccountAction[]>> = {
-  steam: [loginViaBrowserAction],
+  steam: [loginViaBrowserAction, transferGiftsAction],
   llm: [loginViaBrowserAction],
 };
 

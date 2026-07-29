@@ -7,7 +7,7 @@ const PROD_CSP =
   "default-src 'self'; " +
   "script-src 'self'; " +
   "style-src 'self' 'unsafe-inline'; " +
-  "img-src 'self' data: https://*.lzt.market https://lolz.live https://*.lolz.live https://zelenka.guru https://*.zelenka.guru https://nztcdn.com; " +
+  "img-src 'self' data: https://*.lzt.market https://lolz.live https://*.lolz.live https://zelenka.guru https://*.zelenka.guru https://nztcdn.com https://*.steamstatic.com https://steamcommunity-a.akamaihd.net; " +
   "font-src 'self' data:; " +
   "connect-src 'self' https://*.lzt.market https://*.lolz.live https://*.zelenka.guru; " +
   "object-src 'none'; " +
@@ -18,7 +18,7 @@ const DEV_CSP =
   "default-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* ws://localhost:*; " +
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* ws://localhost:*; " +
   "style-src 'self' 'unsafe-inline' http://localhost:*; " +
-  "img-src 'self' data: blob: http://localhost:* https://*.lzt.market https://lolz.live https://*.lolz.live https://zelenka.guru https://*.zelenka.guru https://nztcdn.com; " +
+  "img-src 'self' data: blob: http://localhost:* https://*.lzt.market https://lolz.live https://*.lolz.live https://zelenka.guru https://*.zelenka.guru https://nztcdn.com https://*.steamstatic.com https://steamcommunity-a.akamaihd.net; " +
   "font-src 'self' data: http://localhost:*; " +
   "connect-src 'self' http://localhost:* ws://localhost:* https://*.lzt.market https://*.lolz.live https://*.zelenka.guru; " +
   "object-src 'none'; " +

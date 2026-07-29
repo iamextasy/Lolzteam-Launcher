@@ -15,9 +15,10 @@ import { extractSteamCreds } from './extract';
 import { findSteamPaths } from './paths';
 import { killSteamProcesses, waitForSteamExit } from './process';
 import { setAutoLoginUser } from './registry';
-import { type SessionError, acquireRefreshToken, acquireWebSession } from './session';
+import { type SessionError, acquireRefreshToken } from './session';
 import { steam64ToSteam32 } from './steamid';
 import { mergeConfigVdf, mergeLocalVdf, mergeLoginUsersVdf, writeLocalConfigVdf } from './vdf';
+import { SteamWebError, getSteamWebCookies } from './web';
 import { webCookiesToInjectable } from './web-cookies';
 
 type Acquire<D> = (p: {
@@ -127,15 +128,24 @@ const loginViaBrowser = async (
 ): Promise<LoginResult> => {
   if (ctx.abortSignal.aborted) return fail('Вход отменён', 'web');
 
-  const creds = extractSteamCreds(account);
-  if (!creds) return fail('У этого аккаунта нет логина/пароля в данных lzt.market', 'web');
-
   ctx.onProgress?.({ step: 'acquiring-token' });
-  ctx.log.info(`[steam] acquiring web session for item #${account.itemId}`);
-  const session = await resolveSession(account, ctx, creds, acquireWebSession);
-  if (!session.ok) return fail(session.failMessage, 'web');
+  ctx.log.info(`[steam] acquiring web cookies for item #${account.itemId}`);
 
-  const cookies = webCookiesToInjectable(session.data.cookies);
+  let cookiesRaw: string[];
+  try {
+    const web = await getSteamWebCookies({
+      account,
+      proxy: ctx.proxy,
+      signal: ctx.abortSignal,
+    });
+    cookiesRaw = web.cookies;
+  } catch (err) {
+    const message =
+      err instanceof SteamWebError ? err.message : err instanceof Error ? err.message : String(err);
+    return fail(message, 'web');
+  }
+
+  const cookies = webCookiesToInjectable(cookiesRaw);
   if (cookies.length === 0) return fail('Steam не вернул web-куки для входа', 'web');
 
   if (ctx.abortSignal.aborted) return fail('Вход отменён', 'web');
