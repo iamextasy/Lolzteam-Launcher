@@ -8,10 +8,12 @@ interface ModalProps {
   title: string;
   onClose?: () => void;
   closable?: boolean;
+  /** Wider dialog for dense flows (e.g. gift transfer). Default keeps the compact card. */
+  size?: 'md' | 'lg';
   children: ReactNode;
 }
 
-export const Modal = ({ title, onClose, closable = true, children }: ModalProps) => {
+export const Modal = ({ title, onClose, closable = true, size = 'md', children }: ModalProps) => {
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -30,7 +32,12 @@ export const Modal = ({ title, onClose, closable = true, children }: ModalProps)
 
   return createPortal(
     <div className={s.backdrop} onClick={handleBackdrop} role="presentation">
-      <div className={s.card} role="dialog" aria-modal="true" aria-label={title}>
+      <div
+        className={`${s.card} ${size === 'lg' ? s.cardLg : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+      >
         <header className={s.head}>
           <h2 className={s.title}>{title}</h2>
           {closable && (

@@ -34,6 +34,7 @@ interface LoginParams {
   password: string;
   sharedSecret: string | null;
   emailCode?: string;
+  httpProxy?: string | null;
 }
 
 export const acquireRefreshToken = async (params: LoginParams): Promise<SessionResult> =>
@@ -66,7 +67,10 @@ const runCredentialLogin = async (
   params: LoginParams,
   platform: EAuthTokenPlatformType,
 ): Promise<{ result: SessionResult; session: LoginSession }> => {
-  const session = new LoginSession(platform, { machineId: true });
+  const session = new LoginSession(platform, {
+    machineId: true,
+    ...(params.httpProxy ? { httpProxy: params.httpProxy } : {}),
+  });
   const failWith = (error: SessionError): { result: SessionResult; session: LoginSession } => ({
     result: { ok: false, error },
     session,

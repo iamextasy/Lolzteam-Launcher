@@ -386,13 +386,6 @@
   gap: $space-3;
 }
 
-.proxyFailActions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: $space-3;
-}
-
 .warnCancel,
 .warnConfirm {
   @include button-reset;
@@ -466,75 +459,6 @@
   margin: 0;
   font-size: $fs-sm;
   line-height: $lh-base;
-  color: $color-text-muted;
-}
-
-.proxyList {
-  display: flex;
-  flex-direction: column;
-  gap: $space-1;
-}
-
-.proxyScroll {
-  display: flex;
-  flex-direction: column;
-  gap: $space-1;
-  max-height: 280px;
-  overflow-y: auto;
-  // Leave room so the scrollbar doesn't overlap the option content.
-  padding-right: $space-1;
-  @include scrollbar(transparent, rgba(255, 255, 255, 0.14));
-}
-
-.proxyOption {
-  @include button-reset;
-  @include clickable;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: $space-1;
-  padding: $space-3 $space-4;
-  border-radius: $radius-md;
-  font-size: $fs-sm;
-  color: $color-text;
-  background: #ffffff12;
-  text-align: left;
-  transition: background $duration-fast $ease-out;
-
-  &:hover {
-    background: #ffffff20;
-  }
-
-  &:focus-visible {
-    @include focus-ring;
-  }
-}
-
-.proxyName {
-  font-size: $fs-sm;
-  color: $color-text;
-}
-
-.proxyMeta {
-  display: flex;
-  align-items: center;
-  gap: $space-2;
-  font-size: $fs-xs;
-}
-
-.proxyOk {
-  color: $color-accent;
-}
-
-.proxyFail {
-  color: #ff6b6b;
-}
-
-.proxyPing {
-  color: $color-text-muted;
-}
-
-.proxyUnchecked {
   color: $color-text-muted;
 }
 

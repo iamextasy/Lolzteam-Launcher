@@ -1,6 +1,9 @@
 import {
   type AccountsCategoryEvent,
   type CheckAccountResult,
+  type GiftsListResult,
+  type GiftsTransferProgress,
+  type GiftsTransferResult,
   IPC_CHANNELS,
   type LabelMutationResult,
   type LoginProgress,
@@ -83,6 +86,30 @@ const api = {
       on<LoginProgress>(IPC_CHANNELS.ACCOUNT_LOGIN_PROGRESS, h),
     onLoginRequest: (h: (p: { itemId: number }) => void) =>
       on<{ itemId: number }>(IPC_CHANNELS.ACCOUNT_LOGIN_REQUEST, h),
+    gifts: {
+      list: (
+        itemId: number,
+        proxyId?: string | null,
+        proxyTest?: { ip: string; ms: number } | null,
+      ) =>
+        invoke<GiftsListResult>(IPC_CHANNELS.ACCOUNT_GIFTS_LIST, {
+          itemId,
+          proxyId,
+          proxyTest,
+        }),
+      transfer: (payload: {
+        itemId: number;
+        destKind: 'email' | 'invite';
+        pairs: Array<{ assetId: string; recipient: string }>;
+        giftNames?: Record<string, string>;
+        proxyId?: string | null;
+        proxyTest?: { ip: string; ms: number } | null;
+      }) => invoke<GiftsTransferResult>(IPC_CHANNELS.ACCOUNT_GIFTS_TRANSFER, payload),
+      cancelTransfer: (itemId: number) =>
+        invoke<void>(IPC_CHANNELS.ACCOUNT_GIFTS_TRANSFER_CANCEL, { itemId }),
+      onTransferProgress: (h: (p: GiftsTransferProgress) => void) =>
+        on<GiftsTransferProgress>(IPC_CHANNELS.ACCOUNT_GIFTS_TRANSFER_PROGRESS, h),
+    },
   },
   profile: {
     getLabels: () => invoke<UserLabel[]>(IPC_CHANNELS.PROFILE_LABELS_GET),

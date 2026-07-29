@@ -13,6 +13,7 @@ import { registerProfileIpc } from './ipc/profile';
 import { registerProxyIpc } from './ipc/proxy';
 import { registerSettingsIpc } from './ipc/settings';
 import { registerSteamIpc } from './ipc/steam';
+import { registerGiftsIpc } from './ipc/gifts';
 import { initAppProxy } from './services/api-session';
 import { registerProxyAuthHandler } from './services/proxy';
 import { getCachedSettings } from './settings/settings-store';
@@ -74,6 +75,7 @@ app.whenReady().then(async () => {
   registerProfileIpc();
   registerSettingsIpc();
   registerSteamIpc();
+  registerGiftsIpc();
   registerProxyIpc();
   registerUpdaterIpc();
 

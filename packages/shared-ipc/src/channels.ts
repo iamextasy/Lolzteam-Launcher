@@ -57,6 +57,51 @@ export interface BrowserNavState {
 
 export type NetworkStatus = { online: true; ms: number } | { online: false; message: string };
 
+export type SteamGiftItem = {
+  id: string;
+  name: string;
+  marketHashName: string;
+  iconUrl: string | null;
+  timed: boolean;
+  regional: boolean;
+  restrictionCountries: string | null;
+  tradable: boolean;
+  alreadySent: boolean;
+};
+
+export type GiftsDestKind = 'email' | 'invite';
+
+export type GiftTransferPair = {
+  assetId: string;
+  recipient: string;
+};
+
+export type GiftsListResult = { ok: true; gifts: SteamGiftItem[] } | { ok: false; message: string };
+
+export type GiftsTransferProgress = {
+  itemId: number;
+  done: number;
+  total: number;
+  assetId: string;
+  giftName: string;
+  recipient: string;
+};
+
+export type GiftsTransferError = {
+  assetId: string;
+  giftName: string;
+  recipient: string;
+  message: string;
+};
+
+export type GiftsTransferResult = {
+  ok: boolean;
+  okCount: number;
+  failCount: number;
+  errors: GiftsTransferError[];
+  message?: string;
+};
+
 export type UpdateStatus =
   | { state: 'checking' }
   | { state: 'available'; version: string; notes: string | null }
@@ -104,6 +149,11 @@ export const IPC_CHANNELS = {
   SETTINGS_PICK_FILE: 'settings:pick-file',
 
   STEAM_CLEAR_SESSION: 'steam:clear-session',
+
+  ACCOUNT_GIFTS_LIST: 'account:gifts-list',
+  ACCOUNT_GIFTS_TRANSFER: 'account:gifts-transfer',
+  ACCOUNT_GIFTS_TRANSFER_PROGRESS: 'account:gifts-transfer-progress',
+  ACCOUNT_GIFTS_TRANSFER_CANCEL: 'account:gifts-transfer-cancel',
 
   PROXY_TEST: 'proxy:test',
   PROXY_FETCH_MARKET: 'proxy:fetch-market',
@@ -169,6 +219,20 @@ export interface IpcRequestMap {
   [IPC_CHANNELS.SETTINGS_SET]: Partial<LauncherSettings>;
   [IPC_CHANNELS.SETTINGS_PICK_FILE]: PickFileOptions;
   [IPC_CHANNELS.STEAM_CLEAR_SESSION]: undefined;
+  [IPC_CHANNELS.ACCOUNT_GIFTS_LIST]: {
+    itemId: number;
+    proxyId?: string | null;
+    proxyTest?: ProxyTestInfo | null;
+  };
+  [IPC_CHANNELS.ACCOUNT_GIFTS_TRANSFER]: {
+    itemId: number;
+    destKind: GiftsDestKind;
+    pairs: GiftTransferPair[];
+    giftNames?: Record<string, string>;
+    proxyId?: string | null;
+    proxyTest?: ProxyTestInfo | null;
+  };
+  [IPC_CHANNELS.ACCOUNT_GIFTS_TRANSFER_CANCEL]: { itemId: number };
   [IPC_CHANNELS.PROXY_TEST]: Pick<
     ProxyEntry,
     'host' | 'port' | 'username' | 'password' | 'protocol'
@@ -222,6 +286,9 @@ export interface IpcResponseMap {
   [IPC_CHANNELS.SETTINGS_SET]: SettingsResponse;
   [IPC_CHANNELS.SETTINGS_PICK_FILE]: string | null;
   [IPC_CHANNELS.STEAM_CLEAR_SESSION]: { ok: boolean; message?: string };
+  [IPC_CHANNELS.ACCOUNT_GIFTS_LIST]: GiftsListResult;
+  [IPC_CHANNELS.ACCOUNT_GIFTS_TRANSFER]: GiftsTransferResult;
+  [IPC_CHANNELS.ACCOUNT_GIFTS_TRANSFER_CANCEL]: undefined;
   [IPC_CHANNELS.PROXY_TEST]: ProxyTestResult;
   [IPC_CHANNELS.PROXY_FETCH_MARKET]: {
     ok: boolean;
@@ -254,6 +321,7 @@ export interface IpcEventMap {
   [IPC_CHANNELS.AUTH_STATUS_CHANGED]: AuthStatus;
   [IPC_CHANNELS.ACCOUNT_LOGIN_PROGRESS]: LoginProgress;
   [IPC_CHANNELS.ACCOUNT_LOGIN_REQUEST]: { itemId: number };
+  [IPC_CHANNELS.ACCOUNT_GIFTS_TRANSFER_PROGRESS]: GiftsTransferProgress;
   [IPC_CHANNELS.ACCOUNTS_CATEGORY]: AccountsCategoryEvent;
   [IPC_CHANNELS.SETTINGS_CHANGED]: SettingsResponse;
   [IPC_CHANNELS.UPDATE_STATUS]: UpdateStatus;

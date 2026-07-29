@@ -22,6 +22,10 @@
   animation: pop-in $duration-base $ease-out;
 }
 
+.cardLg {
+  width: min(720px, 100%);
+}
+
 .head {
   display: flex;
   align-items: center;
