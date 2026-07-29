@@ -23,7 +23,7 @@ import {
 import { useProfileLabels } from '~/stores/profileLabels';
 import { useSettings } from '~/stores/settings';
 import { Modal } from '~/widgets/Modal/Modal';
-import { AccountCard } from './AccountCard';
+import { AccountCard } from './account-card/AccountCard';
 import { SkeletonCard } from './InventorySkeleton';
 import s from './InventoryView.module.scss';
 import { LabelMultiSelect } from './LabelMultiSelect';
