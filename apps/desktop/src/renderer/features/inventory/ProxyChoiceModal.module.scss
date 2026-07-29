@@ -103,19 +103,20 @@
 
 .failActions {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: $space-3;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: $space-2;
 }
 
 .cancel,
 .confirm {
   @include button-reset;
   @include clickable;
-  padding: $space-2 $space-4;
+  padding: $space-2 $space-3;
   border-radius: $radius-md;
   font-size: $fs-sm;
   font-weight: 500;
+  white-space: nowrap;
 
   &:focus-visible {
     @include focus-ring;
@@ -139,6 +140,10 @@
   &:hover {
     filter: brightness(1.1);
   }
+}
+
+.confirmDanger {
+  background: $color-danger;
 }
 
 .spin {

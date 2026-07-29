@@ -10,11 +10,18 @@ export type ProxyTest = { ip: string; ms: number };
 
 interface ProxyChoiceModalProps {
   proxies: ProxyEntry[];
+  /** "Continue without proxy" reads as a warning in some flows, as a plain confirm in others. */
+  confirmTone?: 'accent' | 'danger';
   onChoose: (proxyId: string | null, proxyTest: ProxyTest | null) => void;
   onCancel: () => void;
 }
 
-export const ProxyChoiceModal = ({ proxies, onChoose, onCancel }: ProxyChoiceModalProps) => {
+export const ProxyChoiceModal = ({
+  proxies,
+  confirmTone = 'accent',
+  onChoose,
+  onCancel,
+}: ProxyChoiceModalProps) => {
   const { t, i18n } = useTranslation();
   const [checking, setChecking] = useState(false);
   const [failed, setFailed] = useState<{ entry: ProxyEntry; message: string } | null>(null);
@@ -60,13 +67,17 @@ export const ProxyChoiceModal = ({ proxies, onChoose, onCancel }: ProxyChoiceMod
           </div>
         </div>
         <div className={s.failActions}>
-          <button type="button" className={s.cancel} onClick={() => setFailed(null)}>
-            {t('inventory.card.proxy.change')}
-          </button>
           <button type="button" className={s.cancel} onClick={onCancel}>
             {t('inventory.card.proxy.exit')}
           </button>
-          <button type="button" className={s.confirm} onClick={() => onChoose(null, null)}>
+          <button type="button" className={s.cancel} onClick={() => setFailed(null)}>
+            {t('inventory.card.proxy.change')}
+          </button>
+          <button
+            type="button"
+            className={`${s.confirm} ${confirmTone === 'danger' ? s.confirmDanger : ''}`}
+            onClick={() => onChoose(null, null)}
+          >
             {t('inventory.card.proxy.continueNoProxy')}
           </button>
         </div>
