@@ -1,5 +1,6 @@
 import { LOLZ_CONFIG } from '@lolzteam/shared-ipc';
 import ky, { HTTPError, type KyInstance } from 'ky';
+import { type PageCursor, applyCursor } from './pagination';
 import type {
   ApiCallRecord,
   CheckAccountResponse,
@@ -121,11 +122,11 @@ export class MarketClient {
 
   /** `List.Orders` — accounts the user has purchased. */
   async listOrders(
-    params: { page?: number; categoryId?: number } = {},
+    params: { cursor?: PageCursor; categoryId?: number } = {},
     signal?: AbortSignal,
   ): Promise<RawOrdersResponse> {
     const search = new URLSearchParams();
-    if (params.page) search.set('page', String(params.page));
+    applyCursor(search, params.cursor);
     if (params.categoryId) search.set('category_id', String(params.categoryId));
     return this.http.get('user/orders', { searchParams: search, signal }).json<RawOrdersResponse>();
   }
@@ -137,11 +138,11 @@ export class MarketClient {
 
   /** `List.User` — accounts the authenticated user owns (listings + purchases). */
   async listUser(
-    params: { page?: number; categoryId?: number; show?: string } = {},
+    params: { cursor?: PageCursor; categoryId?: number; show?: string } = {},
     signal?: AbortSignal,
   ): Promise<RawOrdersResponse> {
     const search = new URLSearchParams();
-    if (params.page) search.set('page', String(params.page));
+    applyCursor(search, params.cursor);
     if (params.categoryId) search.set('category_id', String(params.categoryId));
     if (params.show) search.set('show', params.show);
     return this.http.get('user/items', { searchParams: search, signal }).json<RawOrdersResponse>();

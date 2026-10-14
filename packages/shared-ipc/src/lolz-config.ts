@@ -2,13 +2,13 @@ export const LOLZ_CONFIG = {
   appName: 'Lolzteam Launcher',
   appId: 'com.lolzteam.launcher',
   protocolScheme: 'lolzteamlauncher',
-  webUrl: 'https://lolz.live',
+  webUrl: 'https://lolz.team',
   marketWebUrl: 'https://lzt.market',
   /** Where the OAuth consent page is opened. */
   authWebUrl: 'https://lzt.market',
-  marketApiUrl: 'https://prod-api.lzt.market',
+  marketApiUrl: 'https://api.lzt.market',
   // Forum API — the only `/users/me` that returns avatar URLs.
-  forumApiUrl: 'https://prod-api.lolz.live',
+  forumApiUrl: 'https://api.lolz.team',
 
   /** Where the anonymous metric goes, and the only host the app talks to that is not lolz. */
   telemetryUrl: 'https://extasy.sh/api/launcher/events',

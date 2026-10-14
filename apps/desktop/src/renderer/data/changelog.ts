@@ -9,6 +9,22 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '1.1.1',
+    date: '2026-10-14',
+    changes: {
+      ru: [
+        'Доработка под предстоящее обновление API Маркета: с 1 ноября списки аккаунтов загружаются по новой курсорной пагинации',
+        'Аккаунт больше не может попасть в список дважды, если база менялась во время загрузки',
+        'Переход на новые домены: lolz.team вместо lolz.live, api.* вместо prod-api.*',
+      ],
+      en: [
+        'Prepared for the upcoming Market API update: from 1 November, account lists load with the new cursor-based pagination',
+        'An account can no longer appear twice in the list if the base changed while it was loading',
+        'Moved to the new domains: lolz.team instead of lolz.live, api.* instead of prod-api.*',
+      ],
+    },
+  },
+  {
     version: '1.1.0',
     date: '2026-09-16',
     changes: {

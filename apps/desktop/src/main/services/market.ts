@@ -1,5 +1,5 @@
 import type { GuardCodeAnswer } from '@adapter-contract';
-import { MarketClient, readRateLimit } from '@market-sdk';
+import { MarketClient, type PageCursor, readNextPage, readRateLimit } from '@market-sdk';
 import type {
   ItemEditFields,
   RateLimitInfo,
@@ -659,11 +659,25 @@ const pace = async (info: RateLimitInfo | null, signal?: AbortSignal): Promise<v
 };
 
 // 'purchased' reads the user's orders; 'listed' reads their own active listings.
-const fetchPage = (scope: MarketScope, page: number, categoryId?: number, signal?: AbortSignal) =>
+const fetchPage = (
+  scope: MarketScope,
+  cursor: PageCursor | undefined,
+  categoryId?: number,
+  signal?: AbortSignal,
+) =>
   scope === 'listed'
-    ? getClient().listUser({ page, categoryId, show: 'active' }, signal)
-    : getClient().listOrders({ page, categoryId }, signal);
+    ? getClient().listUser({ cursor, categoryId, show: 'active' }, signal)
+    : getClient().listOrders({ cursor, categoryId }, signal);
 
+const sameCursor = (a: PageCursor | undefined, b: PageCursor): boolean =>
+  a !== undefined &&
+  ('after' in a ? 'after' in b && a.after === b.after : 'page' in b && a.page === b.page);
+
+/**
+ * Walks a list by `nextPageHref` — the cursor the server hands back, never a
+ * page number we make up. A response without the field falls back on
+ * `hasNextPage` and a counted page, for as long as the server still answers that way.
+ */
 const paginate = async (
   scope: MarketScope,
   categoryId?: number,
@@ -672,6 +686,9 @@ const paginate = async (
 ): Promise<MarketList> => {
   const epoch = tokenEpoch;
   const out: AccountSummary[] = [];
+  const seen = new Set<number>();
+  // The first page goes out bare; every later one carries what the server told us.
+  let cursor: PageCursor | undefined;
   let page = 1;
   let hasNext = true;
   // Recomputed from every response rather than pinned on the first, so a list that grows mid-walk raises the bound with it.
@@ -681,7 +698,7 @@ const paginate = async (
     if (tokenEpoch !== epoch || signal?.aborted) return { items: out, complete: false };
     let resp: RawOrdersResponse;
     try {
-      resp = await fetchPage(scope, page, categoryId, signal);
+      resp = await fetchPage(scope, cursor, categoryId, signal);
     } catch (err) {
       if (!isAbortError(err) && !signal?.aborted) {
         log.warn(`[market] page ${page} failed (${where})`, err);
@@ -689,8 +706,15 @@ const paginate = async (
       return { items: out, complete: false };
     }
     const items = resp.items ?? [];
+    // A server that ignores the cursor answers with a page we already have; that is a stall, not more data.
+    const fresh = items.filter((it) => !seen.has(it.item_id));
+    if (page > 1 && items.length > 0 && fresh.length === 0) {
+      log.warn(`[market] page ${page} repeated an earlier one (${where}) — the list is incomplete`);
+      return { items: out, complete: false };
+    }
+    for (const it of fresh) seen.add(it.item_id);
     // Resold items only appear among purchases; own listings are kept as-is.
-    const visible = scope === 'listed' ? items : items.filter((it) => !isResold(it));
+    const visible = scope === 'listed' ? fresh : fresh.filter((it) => !isResold(it));
     const normalized = visible.map((it) => normalizeItem(it, scope));
     out.push(...normalized);
     const perPage = resp.perPage || items.length;
@@ -698,10 +722,24 @@ const paginate = async (
       perPage > 0 && resp.totalItems > 0 ? Math.ceil(resp.totalItems / perPage) : null;
     if (totalPages !== null) bound = Math.min(totalPages + PAGE_SLACK, MAX_PAGES);
     onPage?.(normalized, { page, totalPages });
-    if (typeof resp.hasNextPage === 'boolean') {
-      hasNext = resp.hasNextPage;
+
+    const next = readNextPage(resp);
+    if (next === null) {
+      hasNext = false;
+    } else if (next !== undefined) {
+      // The same cursor twice would only fetch the same page again.
+      if (sameCursor(cursor, next)) {
+        log.warn(`[market] cursor did not advance after page ${page} (${where})`);
+        return { items: out, complete: false };
+      }
+      cursor = next;
     } else {
-      hasNext = items.length > 0 && perPage > 0 && page * perPage < resp.totalItems;
+      if (typeof resp.hasNextPage === 'boolean') {
+        hasNext = resp.hasNextPage;
+      } else {
+        hasNext = items.length > 0 && perPage > 0 && page * perPage < resp.totalItems;
+      }
+      cursor = { page: page + 1 };
     }
     page += 1;
     if (hasNext && page <= bound) await pace(readRateLimit(resp), signal);

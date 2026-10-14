@@ -233,10 +233,15 @@ export interface RawMarketItem {
 export interface RawOrdersResponse {
   items: RawMarketItem[];
   totalItems: number;
-  /** Authoritative "more pages?" flag from the API. */
+  /**
+   * The link to the next page, `null` on the last one. The only way forward
+   * once numbered paging is gone — read it with `readNextPage`.
+   */
+  nextPageHref?: string | null;
+  /** "More pages?" — the fallback for a response without `nextPageHref`. */
   hasNextPage: boolean;
   perPage: number;
-  page: number;
+  page?: number;
   /** Carries `rate_limit`, among other things. */
   system_info?: unknown;
 }

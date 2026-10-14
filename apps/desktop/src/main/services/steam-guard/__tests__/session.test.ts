@@ -45,6 +45,7 @@ vi.mock('../../market', () => ({
   fetchAccountDetails,
 }));
 vi.mock('../../proxy', () => ({ proxyUrlFor: vi.fn(() => 'http://proxy') }));
+vi.mock('../../confirm-broker', () => ({ askAccountConfirm: vi.fn(async () => false) }));
 
 const { getGuardAccessToken, getGuardWebCookies, linkGuardAccount, resetGuardTokensForTests } =
   await import('../session');
