@@ -20,7 +20,7 @@ import {
   isReinstall,
   permissionKey,
   replacesStoreInstall,
-} from './browserExtensions';
+} from './extensionPermissions';
 
 type SourceKind = ExtensionInstallSource['kind'];
 

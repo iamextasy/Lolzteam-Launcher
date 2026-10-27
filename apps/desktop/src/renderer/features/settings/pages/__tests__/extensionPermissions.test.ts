@@ -16,7 +16,7 @@ import {
   patternHost,
   permissionKey,
   replacesStoreInstall,
-} from '../browserExtensions';
+} from '../extensionPermissions';
 
 /** Synthetic ids: 32 letters a–p, as Chrome spells them. */
 const ID_A = 'abcdefghijklmnopabcdefghijklmnop';
