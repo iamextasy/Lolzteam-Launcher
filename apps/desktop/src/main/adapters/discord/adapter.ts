@@ -7,12 +7,13 @@ import type {
 } from '@adapter-contract';
 import type { AccountDetails } from '@shared-types';
 import { serviceLabel } from '@shared-types';
-import { BrowserWindow, session } from 'electron';
+import { BrowserWindow } from 'electron';
 import { mailboxPairFor } from '../../services/mailbox';
 import { applyProxyToSession, clearProxyFromSession } from '../../services/proxy';
 import { MAIN_COLORS } from '../../theme';
 import { failLogin as fail } from '../_shared/fail';
 import { createBrowserShell } from '../browser/browser-shell';
+import { prepareAccountSession } from '../browser/shell-window';
 import { extractDiscordToken } from './extract';
 
 const LOGIN_URL = 'https://discord.com/login';
@@ -48,17 +49,18 @@ const isDiscordUrl = (raw: string): boolean => {
   }
 };
 
-const prepareSession = async (partition: string, ctx: AdapterContext): Promise<void> => {
-  const ses = session.fromPartition(partition);
-  await ses.clearStorageData();
+/** `injectCookies` without the cookies: the same order, extensions out before the wipe and back in last. */
+const prepareSession = (partition: string, ctx: AdapterContext): Promise<void> =>
+  prepareAccountSession(partition, ctx, async (ses) => {
+    await ses.clearStorageData();
 
-  if (ctx.proxy) {
-    await applyProxyToSession(ses, ctx.proxy);
-    ctx.log.info(`[discord] routing #${partition} via proxy ${ctx.proxy.host}:${ctx.proxy.port}`);
-  } else {
-    await clearProxyFromSession(ses);
-  }
-};
+    if (ctx.proxy) {
+      await applyProxyToSession(ses, ctx.proxy);
+      ctx.log.info(`[discord] routing #${partition} via proxy ${ctx.proxy.host}:${ctx.proxy.port}`);
+    } else {
+      await clearProxyFromSession(ses);
+    }
+  });
 
 export const discordAdapter: ServiceAdapter = {
   id: 'discord',

@@ -7,6 +7,7 @@ export * from './action-log';
 export * from './local-account';
 export * from './local-import';
 export * from './auth';
+export * from './browser';
 export * from './mail';
 export * from './metrics';
 export * from './notification';

@@ -1,0 +1,249 @@
+// The top row of the chrome (TABS_H): a strip a shade darker than the toolbar, whose active tab is the toolbar's
+// own surface reaching up into it — Chrome's dark tab strip.
+$strip: #101010;
+$surface: #1b1b1b; // The toolbar row, under the strip.
+$curve: 8px;
+
+.strip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  height: 40px;
+  background: $strip;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  user-select: none;
+}
+
+// Its basis (set inline) is every tab at full width; short of room it narrows, the tabs shrink from 240px to 72px,
+// and past that it scrolls. A basis rather than `auto`: the tabs' content would make a poor measure of their width.
+.tabs {
+  // Positioned, so the tabs' `offsetLeft` is measured from here.
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  flex: 0 1 auto;
+  min-width: 0;
+  height: 100%;
+  // Room for the active tab's outer curves at either end.
+  padding: 0 $curve;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.tab {
+  position: relative;
+  // Its own stacking context, so the shapes drawn behind it stay behind its contents and nobody else's.
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  flex: 0 1 240px;
+  min-width: 72px;
+  height: 34px;
+  color: #9a9a9a;
+  container-type: inline-size;
+  transition: color 120ms ease;
+
+  // The hover pill of a background tab; the active tab's body.
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 3px 2px;
+    z-index: -1;
+    border-radius: 8px;
+    background: transparent;
+    transition: background 120ms ease;
+  }
+
+  &:hover {
+    color: #d6d6d6;
+
+    &::before {
+      background: rgba(255, 255, 255, 0.06);
+    }
+  }
+}
+
+.tabActive {
+  // Over its neighbours: its curves reach into their corners.
+  z-index: 1;
+  color: #ececec;
+
+  &::before,
+  &:hover::before {
+    inset: 0;
+    border-radius: $curve $curve 0 0;
+    background: $surface;
+  }
+
+  // The two inward curves at its feet, where it flows into the toolbar row.
+  &::after {
+    content: '';
+    position: absolute;
+    left: -$curve;
+    right: -$curve;
+    bottom: 0;
+    z-index: -1;
+    height: $curve;
+    background:
+      radial-gradient(circle at 0 0, transparent #{$curve - 0.5px}, $surface $curve) left bottom /
+        $curve $curve no-repeat,
+      radial-gradient(circle at 100% 0, transparent #{$curve - 0.5px}, $surface $curve) right bottom /
+        $curve $curve no-repeat;
+    pointer-events: none;
+  }
+
+  &:hover {
+    color: #ececec;
+  }
+}
+
+// A thin line between two background tabs; none next to the active one or one under the pointer.
+.divider {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background: #2e2e2e;
+  transition: opacity 120ms ease;
+}
+
+.tab:first-child .divider,
+.tabActive .divider,
+.tabActive + .tab .divider,
+.tab:hover .divider,
+.tab:hover + .tab .divider {
+  opacity: 0;
+}
+
+.tabMain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 4px 0 12px;
+  border: none;
+  border-radius: $curve $curve 0 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: default;
+
+  &:focus-visible {
+    outline: 2px solid #1ea360;
+    outline-offset: -3px;
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.placeholder {
+  color: #7a7a7a;
+}
+
+.spinner {
+  box-sizing: border-box;
+  border: 2px solid rgba(30, 163, 96, 0.22);
+  border-top-color: #1ea360;
+  border-radius: 50%;
+  animation: tabSpin 0.8s linear infinite;
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 16px;
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0;
+  transition: background 120ms ease, color 120ms ease, opacity 120ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+  }
+}
+
+.tab:hover .close,
+.tabActive .close {
+  opacity: 1;
+}
+
+// Squeezed: a background tab keeps its icon and gives up the ×; the active one keeps the × and gives up the icon.
+@container (max-width: 92px) {
+  .tab:not(.tabActive) .close {
+    display: none;
+  }
+
+  .tabActive .icon {
+    display: none;
+  }
+}
+
+.newTab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  // Centred on the tabs, which sit at the strip's bottom; a little apart from a tab cut off by the scroll.
+  margin: 0 8px 3px 4px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #cfcfcf;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #1ea360;
+    outline-offset: -2px;
+  }
+}
+
+@keyframes tabSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

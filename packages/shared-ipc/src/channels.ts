@@ -8,7 +8,17 @@ import type {
   ApiMonitorSnapshot,
   AuthStatus,
   AuthTokenPayload,
+  BookmarkEdit,
+  BookmarkOpenRequest,
+  BrowserBookmark,
+  BrowserBookmarksState,
+  BrowserExtensionInfo,
+  BrowserTabsState,
   DesktopNotification,
+  ExtensionInstallPreview,
+  ExtensionInstallSource,
+  ExtensionPage,
+  ExtensionResult,
   GuardAuthSessionInfo,
   GuardCodeResult,
   GuardConfirmation,
@@ -295,6 +305,38 @@ export const IPC_CHANNELS = {
   BROWSER_NAV_PROXY_RETEST: 'browser-nav:proxy-retest',
   BROWSER_NAV_OPEN_EMAIL: 'browser-nav:open-email',
   BROWSER_NAV_STATE: 'browser-nav:state',
+  /** main → toolbar: `BrowserBookmarksState`, on load and whenever the bookmarks change. */
+  BROWSER_NAV_BOOKMARKS: 'browser-nav:bookmarks',
+  /** Pins the page the window is on; main reads its URL and title itself. */
+  BROWSER_NAV_BOOKMARK_ADD: 'browser-nav:bookmark-add',
+  BROWSER_NAV_BOOKMARK_REMOVE: 'browser-nav:bookmark-remove',
+  /** The toolbar's bookmark editor: a new title and URL for an existing bookmark. */
+  BROWSER_NAV_BOOKMARK_UPDATE: 'browser-nav:bookmark-update',
+  /** By id — the toolbar never hands main a URL to open from a bookmark. */
+  BROWSER_NAV_BOOKMARK_OPEN: 'browser-nav:bookmark-open',
+  /** main → toolbar: a shortcut asked for the address bar. */
+  BROWSER_NAV_FOCUS_ADDRESS: 'browser-nav:focus-address',
+  /** main → toolbar: the enabled extensions, as `BrowserExtensionInfo[]`. */
+  BROWSER_NAV_EXTENSIONS: 'browser-nav:extensions',
+  BROWSER_NAV_EXTENSION_OPEN: 'browser-nav:extension-open',
+  /** main → toolbar: `BrowserTabsState`, whenever a tab opens, closes, switches, or changes title/icon/loading. */
+  BROWSER_NAV_TABS: 'browser-nav:tabs',
+  /** A blank tab, active, with the address bar focused. */
+  BROWSER_NAV_TAB_NEW: 'browser-nav:tab-new',
+  BROWSER_NAV_TAB_CLOSE: 'browser-nav:tab-close',
+  BROWSER_NAV_TAB_ACTIVATE: 'browser-nav:tab-activate',
+
+  /** Chrome extensions of the built-in browser, managed from the settings. */
+  EXTENSIONS_LIST: 'extensions:list',
+  /** Downloads / unpacks / patches into a staging folder and answers what the user would be agreeing to. */
+  EXTENSIONS_PREPARE: 'extensions:prepare',
+  EXTENSIONS_COMMIT: 'extensions:commit',
+  EXTENSIONS_DISCARD: 'extensions:discard',
+  EXTENSIONS_REMOVE: 'extensions:remove',
+  EXTENSIONS_SET_ENABLED: 'extensions:set-enabled',
+  EXTENSIONS_UPDATE: 'extensions:update',
+  /** main → main window: the list changed. */
+  EXTENSIONS_CHANGED: 'extensions:changed',
 
   APP_OPEN_EXTERNAL: 'app:open-external',
   APP_PING_API: 'app:ping-api',
@@ -452,6 +494,21 @@ export interface IpcRequestMap {
   [IPC_CHANNELS.BROWSER_NAV_COLLAPSE]: undefined;
   [IPC_CHANNELS.BROWSER_NAV_PROXY_RETEST]: undefined;
   [IPC_CHANNELS.BROWSER_NAV_OPEN_EMAIL]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_BOOKMARK_ADD]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_BOOKMARK_REMOVE]: string;
+  [IPC_CHANNELS.BROWSER_NAV_BOOKMARK_OPEN]: BookmarkOpenRequest;
+  [IPC_CHANNELS.BROWSER_NAV_BOOKMARK_UPDATE]: BookmarkEdit;
+  [IPC_CHANNELS.BROWSER_NAV_TAB_NEW]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_TAB_CLOSE]: number;
+  [IPC_CHANNELS.BROWSER_NAV_TAB_ACTIVATE]: number;
+  [IPC_CHANNELS.BROWSER_NAV_EXTENSION_OPEN]: { id: string; page: ExtensionPage };
+  [IPC_CHANNELS.EXTENSIONS_LIST]: undefined;
+  [IPC_CHANNELS.EXTENSIONS_PREPARE]: ExtensionInstallSource;
+  [IPC_CHANNELS.EXTENSIONS_COMMIT]: string;
+  [IPC_CHANNELS.EXTENSIONS_DISCARD]: string;
+  [IPC_CHANNELS.EXTENSIONS_REMOVE]: string;
+  [IPC_CHANNELS.EXTENSIONS_SET_ENABLED]: { id: string; enabled: boolean };
+  [IPC_CHANNELS.EXTENSIONS_UPDATE]: string;
   [IPC_CHANNELS.APP_OPEN_EXTERNAL]: { url: string };
   [IPC_CHANNELS.APP_PING_API]: undefined;
   [IPC_CHANNELS.APP_API_STATS]: undefined;
@@ -588,6 +645,23 @@ export interface IpcResponseMap {
   [IPC_CHANNELS.BROWSER_NAV_COLLAPSE]: undefined;
   [IPC_CHANNELS.BROWSER_NAV_PROXY_RETEST]: ProxyTestResult;
   [IPC_CHANNELS.BROWSER_NAV_OPEN_EMAIL]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_BOOKMARK_ADD]: BrowserBookmark | null;
+  [IPC_CHANNELS.BROWSER_NAV_BOOKMARK_REMOVE]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_BOOKMARK_OPEN]: undefined;
+  /** `null` when the edit was refused: not a web URL, a duplicate of another bookmark, an unknown id. */
+  [IPC_CHANNELS.BROWSER_NAV_BOOKMARK_UPDATE]: BrowserBookmark | null;
+  [IPC_CHANNELS.BROWSER_NAV_TAB_NEW]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_TAB_CLOSE]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_TAB_ACTIVATE]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_EXTENSION_OPEN]: undefined;
+  [IPC_CHANNELS.EXTENSIONS_LIST]: BrowserExtensionInfo[];
+  [IPC_CHANNELS.EXTENSIONS_PREPARE]: ExtensionResult<ExtensionInstallPreview>;
+  [IPC_CHANNELS.EXTENSIONS_COMMIT]: ExtensionResult<BrowserExtensionInfo>;
+  [IPC_CHANNELS.EXTENSIONS_DISCARD]: undefined;
+  [IPC_CHANNELS.EXTENSIONS_REMOVE]: ExtensionResult<null>;
+  [IPC_CHANNELS.EXTENSIONS_SET_ENABLED]: ExtensionResult<BrowserExtensionInfo>;
+  /** The newer version staged for `EXTENSIONS_COMMIT`; `null` when the installed version is already the newest. */
+  [IPC_CHANNELS.EXTENSIONS_UPDATE]: ExtensionResult<ExtensionInstallPreview | null>;
   [IPC_CHANNELS.APP_OPEN_EXTERNAL]: undefined;
   [IPC_CHANNELS.APP_PING_API]: NetworkStatus;
   [IPC_CHANNELS.APP_API_STATS]: ApiMonitorSnapshot;
@@ -624,6 +698,11 @@ export interface IpcEventMap {
   [IPC_CHANNELS.SETTINGS_CHANGED]: SettingsResponse;
   [IPC_CHANNELS.UPDATE_STATUS]: UpdateStatus;
   [IPC_CHANNELS.BROWSER_NAV_STATE]: BrowserNavState;
+  [IPC_CHANNELS.BROWSER_NAV_BOOKMARKS]: BrowserBookmarksState;
+  [IPC_CHANNELS.BROWSER_NAV_TABS]: BrowserTabsState;
+  [IPC_CHANNELS.BROWSER_NAV_FOCUS_ADDRESS]: undefined;
+  [IPC_CHANNELS.BROWSER_NAV_EXTENSIONS]: BrowserExtensionInfo[];
+  [IPC_CHANNELS.EXTENSIONS_CHANGED]: BrowserExtensionInfo[];
   [IPC_CHANNELS.MAIL_OPEN_REQUEST]: { emailPassword: string };
   [IPC_CHANNELS.TASK_PROGRESS]: TelegramTaskEvent;
 }

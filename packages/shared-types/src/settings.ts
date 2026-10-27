@@ -1,3 +1,4 @@
+import type { BrowserBookmark } from './browser';
 import type { NotifyCategory } from './notification';
 import { type LoginMethod, SERVICE_IDS, type ServiceId, getService } from './service-registry';
 import type { AccountValidity } from './validity';
@@ -106,6 +107,10 @@ export interface LauncherSettings {
   localDbDir: string | null;
   /** Every base folder the user has opened, oldest first — the switcher's list. */
   localDbDirs: string[];
+  /** Pages pinned to the bookmarks bar of the built-in browser, in bar order. */
+  browserBookmarks: BrowserBookmark[];
+  /** Draw the bookmarks bar under the address bar (when there is anything on it). */
+  browserBookmarksBar: boolean;
 }
 
 /** What the grid is ordered by. */
@@ -168,6 +173,8 @@ export const DEFAULT_SETTINGS: LauncherSettings = {
   preferredLoginMethod: {},
   localDbDir: null,
   localDbDirs: [],
+  browserBookmarks: [],
+  browserBookmarksBar: true,
 };
 
 /** May this category speak? */

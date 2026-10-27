@@ -9,6 +9,7 @@ import { registerAccountsIpc } from './ipc/accounts';
 import { registerActionLogIpc } from './ipc/action-log';
 import { registerAppIpc } from './ipc/app';
 import { registerAuthIpc } from './ipc/auth';
+import { registerExtensionsIpc } from './ipc/extensions';
 import { registerLocalAccountsIpc } from './ipc/local-accounts';
 import { registerLoginIpc } from './ipc/login';
 import { registerMetricsIpc } from './ipc/metrics';
@@ -22,6 +23,7 @@ import { registerTelegramIpc } from './ipc/telegram-base';
 import { buildBrowserUserAgent } from './lib/user-agent';
 import { initAppProxy } from './services/api-session';
 import { registerConfirmIpc } from './services/confirm-broker';
+import { initExtensions } from './services/extensions';
 import { initMetrics } from './services/metrics';
 import { registerProxyAuthHandler } from './services/proxy';
 import { registerUpdaterIpc } from './updater';
@@ -81,6 +83,10 @@ app.whenReady().then(async () => {
   registerProxyAuthHandler();
   await initAppProxy();
   registerConfirmIpc();
+  // Not awaited: after an update it re-patches whole extensions, and a login waits for it by itself anyway.
+  void initExtensions().catch((err: unknown) =>
+    log.error('[boot] extensions failed to start', err),
+  );
 
   const win = createMainWindow();
   try {
@@ -102,6 +108,7 @@ app.whenReady().then(async () => {
   registerSteamGuardIpc();
   registerTelegramIpc();
   registerProxyIpc();
+  registerExtensionsIpc();
   registerNotifyIpc();
   registerMetricsIpc();
   registerUpdaterIpc();

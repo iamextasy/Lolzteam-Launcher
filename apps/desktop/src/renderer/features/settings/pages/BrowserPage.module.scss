@@ -1,0 +1,585 @@
+/** Ровно `.groupLabel` из `SettingsControls`: подписи разделов должны совпасть. */
+.sectionLabel {
+  margin: 0;
+  color: v2.$textMuted;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.listSection {
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+
+/** Карточка списка — та же, что у прокси. */
+.listCard {
+  display: flex;
+  flex-direction: column;
+  background-color: v2.$primaryDark;
+  border: 1px solid v2.$primary;
+  border-radius: v2.$radiusLG;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 8px 8px 14px;
+  background: v2.$primaryDarker;
+  border-radius: v2.$radiusLG v2.$radiusLG 0 0;
+}
+
+.toolbarInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.listCount {
+  font-size: 14px;
+  color: v2.$textContent;
+  white-space: nowrap;
+}
+
+.pill {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  color: #f8a93f;
+  background: rgba(248, 169, 63, .14);
+}
+
+.empty {
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #949494;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px 8px 6px;
+  transition: background $duration-fast $ease-out, box-shadow $duration-fast $ease-out,
+    opacity $duration-fast $ease-out;
+
+  & + & {
+    border-top: 1px solid v2.$primary;
+  }
+
+  /* Последняя строка скругляет себе низ сама: карточка списка без `overflow: clip`. */
+  &:last-child {
+    border-radius: 0 0 v2.$radiusLG v2.$radiusLG;
+  }
+
+  &:hover {
+    background-color: v2.$primary;
+  }
+}
+
+.rowDragging {
+  opacity: .45;
+}
+
+/** Куда встанет перетаскиваемая — черта над строкой, как у меток. */
+.rowOver {
+  box-shadow: inset 0 2px 0 0 $color-accent;
+  background: v2.$primary;
+}
+
+.dragHandle {
+  @include button-reset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 30px;
+  border-radius: 6px;
+  color: #6f6f6f;
+  cursor: grab;
+  transition: color $duration-fast $ease-out;
+
+  &:hover {
+    color: #b6b6b6;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    color: $color-text;
+  }
+}
+
+/** Тот же знак, что на панели закладок в окне браузера, — только крупнее. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: hsl(var(--hue, 150) 28% 27%);
+  color: hsl(var(--hue, 150) 62% 84%);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/** Под favicon — нейтральная плашка: цвет сайта уже в самой картинке. Полупрозрачная — видна и на строке под курсором. */
+.badgeIcon {
+  background: rgba(255, 255, 255, .06);
+}
+
+/** 16 px, как в браузере: favicon рисуют под этот размер, крупнее он мылится. */
+.favicon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.rowInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.rowTitle {
+  font-size: 14px;
+  color: $color-text;
+  @include truncate(1);
+}
+
+.rowSub {
+  font-size: 13px;
+  color: v2.$textMuted;
+  @include truncate(1);
+}
+
+/** Номер для Ctrl+1…9 — подсказка, а не кнопка: тише кнопок справа. */
+.slot {
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid v2.$primary;
+  font-family: inherit;
+  font-size: 12px;
+  color: v2.$textMuted;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.rowActions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  @include button-reset;
+  @include clickable;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  color: #8a8a85;
+  transition: background $duration-fast $ease-out, color $duration-fast $ease-out;
+
+  &:hover:not(:disabled) {
+    background: #ffffff1f;
+    color: $color-text;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.iconBtnDanger {
+  &:hover:not(:disabled) {
+    background: #c0392b33;
+    color: #e06453;
+  }
+}
+
+/* ── Горячие клавиши ───────────────────────────────────────────────────── */
+
+.chords {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px 8px;
+}
+
+/** «или» между двумя сочетаниями одной строки — иначе Ctrl+R и F5 читаются как одно. */
+.or {
+  font-size: 13px;
+  color: #6f6f6f;
+}
+
+.chord {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.chordPart {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/** Одно из сочетаний строки — со своим «или» впереди. */
+.alternative {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.plus {
+  font-size: 12px;
+  color: #6f6f6f;
+}
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 6px;
+  border: 1px solid #3a3a3a;
+  border-bottom-width: 2px;
+  background: v2.$primaryDarker;
+  color: v2.$textContent;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* ── Расширения ────────────────────────────────────────────────────────── */
+
+.toolbarActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/** Поле ссылки под шапкой карточки — как панель добавления у прокси. */
+.installPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  background: v2.$background;
+  border-bottom: 1px solid v2.$primary;
+}
+
+.installRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.installInput {
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid $color-border;
+  background: #161616;
+  color: $color-text;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color $duration-fast $ease-out;
+
+  &::placeholder {
+    color: #6b6b6b;
+  }
+
+  &:focus {
+    border-color: $color-accent;
+  }
+
+  &:disabled {
+    opacity: .6;
+  }
+}
+
+/** Чем кончилось последнее действие: одна строка под полем. */
+.notice {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.noticeOk {
+  color: $color-accent-text;
+}
+
+.noticeMuted {
+  color: v2.$textMuted;
+}
+
+.noticeBad {
+  color: $color-danger-text;
+}
+
+.extRow {
+  padding: 10px 12px;
+}
+
+/** Выключенное расширение тише включённого — переключатель справа остаётся ярким. */
+.extFace {
+  display: flex;
+  flex-shrink: 0;
+  transition: opacity $duration-fast $ease-out;
+}
+
+.extFaceOff {
+  opacity: .5;
+}
+
+.extIcon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.extIconStub {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: v2.$primary;
+  color: v2.$textMuted;
+}
+
+.extIconLarge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+.extTitleLine {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.extVersion {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: v2.$textMuted;
+  font-variant-numeric: tabular-nums;
+}
+
+.extTag {
+  flex-shrink: 0;
+  padding: 1px 7px;
+  border-radius: 6px;
+  font-size: 11px;
+  color: v2.$textMuted;
+  background: v2.$primary;
+  white-space: nowrap;
+}
+
+.spin {
+  animation: browser-spin 1s linear infinite;
+}
+
+/** Тот же переключатель, что у строк настроек, — только внутри строки списка. */
+.switch {
+  @include button-reset;
+  @include clickable;
+  position: relative;
+  flex-shrink: 0;
+  width: 40px;
+  height: 22px;
+  border-radius: $radius-pill;
+  background: $color-surface-overlay;
+  border: 1px solid $color-border;
+  transition: background $duration-fast $ease-out, border-color $duration-fast $ease-out;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: .6;
+  }
+}
+
+.switchKnob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: $color-text-muted;
+  transition: transform $duration-fast $ease-out, background $duration-fast $ease-out;
+}
+
+.switchOn {
+  background: $color-accent;
+  border-color: $color-accent;
+
+  .switchKnob {
+    transform: translateX(18px);
+    background: $color-on-accent;
+  }
+}
+
+/** Под карточкой: что изменения живые и где открыть меню расширения. */
+.listNote {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: v2.$textMuted;
+}
+
+/* ── Окно «Установить расширение?» ─────────────────────────────────────── */
+
+.previewHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.previewTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.previewName {
+  font-size: 15px;
+  font-weight: 600;
+  color: $color-text;
+  overflow-wrap: anywhere;
+}
+
+.previewMeta {
+  font-size: 13px;
+  color: v2.$textMuted;
+}
+
+/** Описание пишет автор расширения: длинное — прокручивается, а не растягивает окно. */
+.previewDesc {
+  margin: 0;
+  max-height: 120px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 20px;
+  color: v2.$textContent;
+  overflow-wrap: anywhere;
+}
+
+.previewBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.previewLabel {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: v2.$textMuted;
+}
+
+.previewEmpty {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: v2.$textMuted;
+}
+
+.permList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  color: v2.$textContent;
+
+  > li {
+    position: relative;
+    padding-left: 14px;
+    overflow-wrap: anywhere;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 2px;
+      top: 8px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: .6;
+    }
+  }
+}
+
+/** Право, которое браузер лаунчера не даст: зачёркнуто — расширение его просит, но не получит. */
+.permOff {
+  color: v2.$textMuted;
+  text-decoration: line-through;
+}
+
+.permMore {
+  color: v2.$textMuted;
+}
+
+/** «Все сайты» — главное, что стоит заметить в списке прав. */
+.permAll {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-warning;
+}
+
+@keyframes browser-spin {
+  to { transform: rotate(360deg); }
+}

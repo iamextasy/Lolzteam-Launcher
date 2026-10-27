@@ -24,7 +24,11 @@ import type {
   ApiMonitorSnapshot,
   AuthStatus,
   AuthTokenPayload,
+  BrowserExtensionInfo,
   DesktopNotification,
+  ExtensionInstallPreview,
+  ExtensionInstallSource,
+  ExtensionResult,
   GuardAuthSessionInfo,
   GuardCodeResult,
   GuardConfirmation,
@@ -261,6 +265,29 @@ const api = {
       invoke<string | null>(IPC_CHANNELS.SETTINGS_PICK_FILE, opts),
     onChanged: (h: (s: SettingsResponse) => void) =>
       on<SettingsResponse>(IPC_CHANNELS.SETTINGS_CHANGED, h),
+  },
+  /** The built-in browser's Chrome extensions: installing is two calls, so the user sees what they agree to. */
+  extensions: {
+    list: () => invoke<BrowserExtensionInfo[]>(IPC_CHANNELS.EXTENSIONS_LIST),
+    // Downloads or reads the package and unpacks it aside; nothing is installed until `commit`.
+    prepare: (source: ExtensionInstallSource) =>
+      invoke<ExtensionResult<ExtensionInstallPreview>>(IPC_CHANNELS.EXTENSIONS_PREPARE, source),
+    commit: (stagingId: string) =>
+      invoke<ExtensionResult<BrowserExtensionInfo>>(IPC_CHANNELS.EXTENSIONS_COMMIT, stagingId),
+    discard: (stagingId: string) => invoke<void>(IPC_CHANNELS.EXTENSIONS_DISCARD, stagingId),
+    remove: (id: string) => invoke<ExtensionResult<null>>(IPC_CHANNELS.EXTENSIONS_REMOVE, id),
+    setEnabled: (id: string, enabled: boolean) =>
+      invoke<ExtensionResult<BrowserExtensionInfo>>(IPC_CHANNELS.EXTENSIONS_SET_ENABLED, {
+        id,
+        enabled,
+      }),
+    // Store installs only. Stages the newer version like `prepare` — `commit` installs it — or `value: null` when
+    // the installed version is already the newest.
+    update: (id: string) =>
+      invoke<ExtensionResult<ExtensionInstallPreview | null>>(IPC_CHANNELS.EXTENSIONS_UPDATE, id),
+    // The whole list, enabled or not, after every install, update, removal and toggle.
+    onChanged: (h: (list: BrowserExtensionInfo[]) => void) =>
+      on<BrowserExtensionInfo[]>(IPC_CHANNELS.EXTENSIONS_CHANGED, h),
   },
   steam: {
     clearSession: () => invoke<{ ok: boolean; message?: string }>(IPC_CHANNELS.STEAM_CLEAR_SESSION),

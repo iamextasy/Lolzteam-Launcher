@@ -1,6 +1,8 @@
 import {
   type AccountValidity,
   type LauncherSettings,
+  MAX_BOOKMARK_ICON_CHARS,
+  MAX_BROWSER_BOOKMARKS,
   SERVICE_IDS,
   type ServiceId,
 } from '@shared-types';
@@ -80,6 +82,35 @@ const isCategoryFilters: Check = (v) => {
   return nullOr(isPrice)(v.priceMin) && nullOr(isPrice)(v.priceMax);
 };
 
+/** `http:`/`https:` and nothing else — a bookmark is opened in an account's session. */
+const isWebAddress: Check = (v) => {
+  if (typeof v !== 'string' || v.length > 4096) return false;
+  try {
+    const { protocol } = new URL(v);
+    return protocol === 'http:' || protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
+/** A favicon inlined as an image `data:` URL — never a link the toolbar would have to fetch. */
+const isIconDataUrl: Check = (v) =>
+  typeof v === 'string' &&
+  v.length <= MAX_BOOKMARK_ICON_CHARS &&
+  /^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/]+=*$/i.test(v);
+
+const isBookmark: Check = (v) =>
+  isPlainObject(v) &&
+  typeof v.id === 'string' &&
+  v.id !== '' &&
+  typeof v.title === 'string' &&
+  v.title.length <= 200 &&
+  isWebAddress(v.url) &&
+  optional(isIconDataUrl)(v.icon);
+
+const isBookmarkList: Check = (v) =>
+  arrayOf(isBookmark)(v) && (v as unknown[]).length <= MAX_BROWSER_BOOKMARKS;
+
 const CHECKS: Record<keyof LauncherSettings, Check> = {
   telegramExePath: nullOr(isString),
   telegramMaxAccounts: isCount,
@@ -115,6 +146,8 @@ const CHECKS: Record<keyof LauncherSettings, Check> = {
   preferredLoginMethod: recordOf(oneOf('native', 'web')),
   localDbDir: nullOr(isString),
   localDbDirs: arrayOf(isString),
+  browserBookmarks: isBookmarkList,
+  browserBookmarksBar: isBool,
 };
 
 export interface SanitizedPatch {

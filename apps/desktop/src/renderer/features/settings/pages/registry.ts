@@ -20,6 +20,7 @@ import { AboutPage } from './AboutPage';
 import { AccountsListPage } from './AccountsListPage';
 import { ActionLogPage } from './ActionLogPage';
 import { ApiMonitorPage } from './ApiMonitorPage';
+import { BrowserIcon, BrowserPage } from './BrowserPage';
 import { DebugPage } from './DebugPage';
 import { GeneralPage } from './GeneralPage';
 import { LabelsPage } from './LabelsPage';
@@ -40,6 +41,7 @@ const PAGES = {
   labels: { icon: TagIcon, Component: LabelsPage },
   login: { icon: LoginIcon, Component: LoginMethodsPage },
   proxy: { icon: GlobeIcon, Component: ProxyPage },
+  browser: { icon: BrowserIcon, Component: BrowserPage },
   telegram: { icon: serviceIcon('telegram'), Component: TelegramPage },
   steam: { icon: serviceIcon('steam'), Component: SteamPage },
   actionLog: { icon: LogIcon, Component: ActionLogPage },
@@ -55,7 +57,7 @@ export type SettingsPageId = keyof typeof PAGES;
 export const SETTINGS_NAV: readonly { id: string; pages: readonly SettingsPageId[] }[] = [
   { id: 'app', pages: ['general', 'notifications'] },
   { id: 'accounts', pages: ['accountsList', 'localDb', 'labels', 'login'] },
-  { id: 'network', pages: ['proxy'] },
+  { id: 'network', pages: ['proxy', 'browser'] },
   { id: 'services', pages: ['telegram', 'steam'] },
   { id: 'system', pages: ['actionLog', 'apiMonitor', 'privacy', 'about'] },
   /* «Разработка» есть только под `pnpm dev`. */

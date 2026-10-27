@@ -9,6 +9,26 @@ export interface ChangelogEntry {
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '1.2.0',
+    date: '2026-10-27',
+    changes: {
+      ru: [
+        'Во встроенном браузере появились вкладки. Работают привычные Ctrl+T, Ctrl+W, Ctrl+Tab и Ctrl+Shift+T, вкладку можно закрыть средним кликом',
+        'Добавили закладки. Страницу можно сохранить звёздочкой в адресной строке или через Ctrl+D, а открыть с панели под адресом или по Ctrl+1…9. Править и сортировать закладки можно в настройках, в разделе «Браузер»',
+        'В браузер можно ставить расширения Chrome: по ссылке из Chrome Web Store, из файла .crx/.zip или из папки. Steam Inventory Helper работает, кнопка «Взять всё» в трейдах тоже',
+        'Новые горячие клавиши: Ctrl+R и F5 обновляют страницу, Alt+← и Alt+→ листают назад и вперёд, Ctrl+L переводит в адресную строку, Esc останавливает загрузку',
+        'Убрали белые вспышки при загрузке страниц и открытии новой вкладки. На новой вкладке теперь видны ваши закладки',
+      ],
+      en: [
+        'The built-in browser now has tabs. The usual Ctrl+T, Ctrl+W, Ctrl+Tab and Ctrl+Shift+T work, and a middle-click closes a tab',
+        'Bookmarks are here. Save a page with the star in the address bar or Ctrl+D, then open it from the bar under the address or with Ctrl+1…9. Edit and reorder bookmarks in Settings, under Browser',
+        'You can install Chrome extensions in the browser: from a Chrome Web Store link, a .crx/.zip file or a folder. Steam Inventory Helper works, including the «Take all» button in trades',
+        'New shortcuts: Ctrl+R and F5 reload, Alt+← and Alt+→ go back and forward, Ctrl+L jumps to the address bar, Esc stops loading',
+        'No more white flashes while a page loads or a new tab opens. A new tab now shows your bookmarks',
+      ],
+    },
+  },
+  {
     version: '1.1.1',
     date: '2026-10-14',
     changes: {

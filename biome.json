@@ -8,6 +8,7 @@
       "**/.vite/**",
       "**/node_modules/**",
       "**/release/**",
+      "**/.impeccable/**",
       "References/**"
     ]
   },
